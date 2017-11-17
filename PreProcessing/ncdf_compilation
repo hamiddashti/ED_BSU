@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# This script will install the ncdf4 for the rstudio...
+# http://www.unidata.ucar.edu/software/netcdf/docs/getting_and_building_netcdf.html
+echo installation starts
+cd
+cd Downloads/
+wget http://www.zlib.net/zlib-1.2.11.tar.gz    # change the format if necessary
+tar xvzf zlib-1.2.11.tar.gz
+cd zlib-1.2.11/
+
+# Build and install zlib---------------------------------
+mkdir /home/hamiddashti/local/zlib
+
+ZDIR=/home/hamiddashti/local/zlib
+./configure --prefix=${ZDIR}
+make check
+make install   # or sudo make install, if root permissions required
+
+# Build and install HDF5----------------------------------
+cd Downloads/
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.0/src/hdf5-1.10.0.tar
+tar -xvf hdf5-1.10.0.tar
+cd hdf5-1.10.0
+mkdir /home/hamiddashti/local/hdf5
+H5DIR=/home/hamiddashti/local/hdf5
+./configure --with-zlib=${ZDIR} --prefix=${H5DIR} --enable-hl
+make check
+make install
+# Build HDF4---------------------------------------------- 
+sudo apt-get install byacc flex # make sure yacc abd flex is installed
+sudo apt-get install libcurl4-gnutls-dev # make sure curl is installed
+sudo apt-get install curl
+
+cd ~/Downloads
+wget https://support.hdfgroup.org/ftp/HDF/HDF_Current/src/hdf-4.2.13.tar
+tar -xvf hdf-4.2.13.tar
+cd hdf-4.2.13
+H4DIR=/home/hamiddashti/local/hdf5  # HDF4 and HDF 5 can be in the same folder
+./configure --enable-shared --disable-netcdf --disable-fortran --prefix=${H4DIR}
+make check
+make install
+
+# Build and install netCDF-4 with HDF4 access enabled--------
+cd ~Download
+mkdir /home/hamiddashti/local/ncdf4
+wget https://github.com/Unidata/netcdf-c/archive/v4.5.0.tar.gz
+tar xvzf v4.5.0.tar.gz
+cd netcdf-c-4.5.0/
+CPPFLAGS="-I${H5DIR}/include -I${H4DIR}/include" \
+LDFLAGS="-L${H5DIR}/lib -L${H4DIR}/lib" \
+./configure --enable-hdf4 --enable-hdf4-file-tests
+make check
+sudo make install
+## Now we can go to rstudio and install the ncdf4 package!
+
+
+
+
+
+
+
+

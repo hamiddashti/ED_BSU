@@ -54,9 +54,9 @@ wrf_to_hdf <- function(y1,y2,leap){
       sh_year <- sh[,1:n_day]
       dlwrf_year <-  dlwrf[,1:n_day]
       nbds_year <- nbds[,1:n_day]
-      } 
+    } 
     
- 
+    
     if (i==y2){ 
       tmp <- tmp
       prate <- prate
@@ -79,7 +79,7 @@ wrf_to_hdf <- function(y1,y2,leap){
       nbds <- nbds[,(n_day+1):ncol(nbds)]
     }
     
-   for (j in 1:12){
+    for (j in 1:12){
       
       if (j == 1) {k2 = 31;M="JAN"}
       if (j == 2) {
@@ -113,28 +113,33 @@ wrf_to_hdf <- function(y1,y2,leap){
       dlwrf_month <- dlwrf_year[,1:k2]
       nbds_month <- nbds_year[,1:k2] 
       if(j==12){
-      tmp_year=tmp_year
-      prate_year=prate_year
-      pres_year=pres_year
-      hgt_year=hgt_year
-      ugrd_year=ugrd_year
-      vgrd_year=vgrd_year
-      sh_year=sh_year
-      dlwrf_year=dlwrf_year
-      nbds_year=nbds_year
+        tmp_year=tmp_year
+        prate_year=prate_year
+        pres_year=pres_year
+        hgt_year=hgt_year
+        ugrd_year=ugrd_year
+        vgrd_year=vgrd_year
+        sh_year=sh_year
+        dlwrf_year=dlwrf_year
+        nbds_year=nbds_year
       } else {
-      tmp_year = tmp_year[,(k2+1):ncol(tmp_year)]
-      prate_year = prate_year[,(k2+1):ncol(prate_year)]
-      pres_year = pres_year[,(k2+1):ncol(pres_year)]
-      hgt_year = hgt_year[,(k2+1):ncol(hgt_year)]
-      ugrd_year = ugrd_year[,(k2+1):ncol(ugrd_year)]
-      vgrd_year = vgrd_year[,(k2+1):ncol(vgrd_year)]
-      sh_year = sh_year[,(k2+1):ncol(sh_year)]
-      dlwrf_year = dlwrf_year[,(k2+1):ncol(dlwrf_year)]
-      nbds_year = nbds_year[,(k2+1):ncol(nbds_year)]
+        tmp_year = tmp_year[,(k2+1):ncol(tmp_year)]
+        prate_year = prate_year[,(k2+1):ncol(prate_year)]
+        pres_year = pres_year[,(k2+1):ncol(pres_year)]
+        hgt_year = hgt_year[,(k2+1):ncol(hgt_year)]
+        ugrd_year = ugrd_year[,(k2+1):ncol(ugrd_year)]
+        vgrd_year = vgrd_year[,(k2+1):ncol(vgrd_year)]
+        sh_year = sh_year[,(k2+1):ncol(sh_year)]
+        dlwrf_year = dlwrf_year[,(k2+1):ncol(dlwrf_year)]
+        nbds_year = nbds_year[,(k2+1):ncol(nbds_year)]
       }
       tmp_mont_vec <- as.vector(tmp_month)
       prate_mont_vec <- as.vector(prate_month)
+      prate_mont_vec_diff<-diff(prate_mont_vec)
+      prate_mont_vec_diff <- replace(prate_mont_vec_diff, prate_mont_vec_diff<0, 0)
+      prate_mont_vec_diff_kg<-(1/10800)*prate_mont_vec_diff
+      prate_mont_vec_diff_kg<-append(prate_mont_vec_diff_kg,prate_mont_vec_diff_kg[length(prate_mont_vec_diff_kg)])
+      
       pres_mont_vec <- as.vector(pres_month)
       hgt_mont_vec <- as.vector(hgt_month)
       ugrd_mont_vec <- as.vector(ugrd_month)
@@ -156,7 +161,7 @@ wrf_to_hdf <- function(y1,y2,leap){
       h5createDataset(filename, "dlwrf", c(n,1,1))
       h5createDataset(filename, "nbds", c(n,1,1))
       h5write(tmp_mont_vec, file = filename, name = "/tmp")
-      h5write(prate_mont_vec, file = filename, name = "/prate")
+      h5write(prate_mont_vec_diff_kg, file = filename, name = "/prate")
       h5write(pres_mont_vec, file = filename, name = "/pres")
       h5write(hgt_mont_vec, file = filename, name = "/hgt")
       h5write(ugrd_mont_vec, file = filename, name = "/ugrd")

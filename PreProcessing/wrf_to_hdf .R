@@ -147,6 +147,10 @@ wrf_to_hdf <- function(y1,y2,leap){
       sh_mont_vec <- as.vector(sh_month)
       dlwrf_mont_vec <- as.vector(dlwrf_month)
       nbds_mont_vec <- as.vector(nbds_month)
+      nddsf <- numeric(n)
+      vbdsf <- numeric(n)
+      vddsf <- numeric(n)
+      
       
       filename <- paste0("HOL_",i,"_",M,".h5")
       # Create new hdf5 file
@@ -159,7 +163,10 @@ wrf_to_hdf <- function(y1,y2,leap){
       h5createDataset(filename, "vgrd", c(n,1,1))
       h5createDataset(filename, "sh", c(n,1,1))
       h5createDataset(filename, "dlwrf", c(n,1,1))
-      h5createDataset(filename, "nbds", c(n,1,1))
+      h5createDataset(filename, "nbdsf", c(n,1,1))
+      h5createDataset(filename, "nddsf", c(n,1,1))
+      h5createDataset(filename, "vbdsf", c(n,1,1))
+      h5createDataset(filename, "vddsf", c(n,1,1))
       h5write(tmp_mont_vec, file = filename, name = "/tmp")
       h5write(prate_mont_vec_diff_kg, file = filename, name = "/prate")
       h5write(pres_mont_vec, file = filename, name = "/pres")
@@ -168,7 +175,11 @@ wrf_to_hdf <- function(y1,y2,leap){
       h5write(vgrd_mont_vec, file = filename, name = "/vgrd")
       h5write(sh_mont_vec, file = filename, name = "/sh")
       h5write(dlwrf_mont_vec, file = filename, name = "/dlwrf")
-      h5write(nbds_mont_vec, file = filename, name = "/nbds")
+      h5write(nbds_mont_vec, file = filename, name = "/nbdsf")
+      h5write(nddsf, file = filename, name = "/nddsf")
+      h5write(vbdsf, file = filename, name = "/vbdsf")
+      h5write(vddsf, file = filename, name = "/vddsf")
+      
       
       
       

@@ -35,7 +35,7 @@ tmp_k <- tmp+273.15
 tmp_k_reshape <- matrix(tmp_k, nrow = 6)
 obs <- colMeans(tmp_k_reshape)  
 t <- seq(1,length(obs),1)
-plot(t_obs,obs,ty="l")
+plot(t,obs,ty="l")
 lines(t,y_2011,col="red")
 
 title(main="WRF vs observed 2011")

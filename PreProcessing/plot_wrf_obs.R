@@ -4,6 +4,7 @@ rm(list = ls())
 setwd("~/wrf/Holl")
 library('openxlsx')
 source("extract_wrf.R")
+source("wrf_to_hdf .R")
 
 #-----------------------Ploting temprature--------------------------
 
@@ -27,7 +28,7 @@ n = 1 # This is the sheet in the file
 
 Station.Data <- read.xlsx("Holl_2011.xlsx", sheet = n,colNames = T)
 # Read the temprature data [c] at 3m and 30 mins measurments
-tmp <- as.vector(Station.Data$`IRT.2.(N)`)
+tmp <- as.vector(Station.Data$AirTC_Avg)
 tmp_k <- tmp+273.15 
 
 # now we take the 3 hour average of 30 mins data
@@ -41,6 +42,8 @@ title(main="WRF vs observed 2011")
 
 
 #--------------------Ploting rainfall [kg/m2/s]---------------------------
+# wrf_to_hdf(2010,2015,2012)
+
 
 JAN <- extract_wrf(2011,01,"prate","HOL","FALSE")
 FEB <- extract_wrf(2011,02,"prate","HOL","FALSE")
@@ -55,10 +58,10 @@ OCT <- extract_wrf(2011,10,"prate","HOL","FALSE")
 NOV <- extract_wrf(2011,11,"prate","HOL","FALSE")
 DEC <- extract_wrf(2011,12,"prate","HOL","FALSE")
 y_2011<-c(JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC)
-prate_mont_vec_diff<-diff(y_2011)
-prate_mont_vec_diff <- replace(prate_mont_vec_diff, prate_mont_vec_diff<0, 0)
-prate_mont_vec_diff_kg<-(1/10800)*prate_mont_vec_diff
-n_prate<-as.numeric(length(prate_mont_vec_diff_kg))
+# prate_mont_vec_diff<-diff(y_2011)
+# prate_mont_vec_diff <- replace(prate_mont_vec_diff, prate_mont_vec_diff<0, 0)
+# prate_mont_vec_diff_kg<-(1/10800)*prate_mont_vec_diff
+n_prate<-as.numeric(length(y_2011))
 t_prate<-1:n_prate
 
 # importing the observed data 
@@ -73,13 +76,13 @@ t_obs <- seq(1,length(obs),1)
 obs_kg <- (1/10800)*obs
 
 max_obs<-max(obs_kg)
-max_wrf<-max(prate_mont_vec_diff_kg)
+max_wrf<-max(y_2011)
 
 par(mar=c(5.1,4.5,4.1,2.1))
 plot(t_obs,obs_kg,col='red',ty="l",ylim = c(0,max(c(max_obs,max_wrf))),
      xlab="time (3h)", ylab="Rainfall [ kg/m2/s ]",cex.lab=1.5)
 title(main="WRF vs observed 2011")
-lines(t_prate,prate_mont_vec_diff_kg,col='blue')
+lines(t_prate,y_2011,col='blue')
 legend('topright', legend=c("Observed", "WRF Simulated"),
        col=c("red", "blue"), lty=1:2, cex=1.2)
 

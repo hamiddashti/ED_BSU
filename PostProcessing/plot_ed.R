@@ -16,23 +16,36 @@ pfx2 <- paste(pfx,"-",dd,sep = "")
 pfx3 <- gsub(pfx2[1],"",List[1])
 fName <- paste(pfx2,pfx3,sep="")
 
-fcontent <- h5ls(fName[1],recursive = TRUE,all = TRUE, datasetinfo = TRUE,
-        index_type = h5default("H5_INDEX"),
-        order = h5default("H5_ITER"))
-varName <- fcontent$name
+# fcontent <- h5ls(fName[1],recursive = TRUE,all = TRUE, datasetinfo = TRUE,
+#         index_type = h5default("H5_INDEX"),
+#         order = h5default("H5_ITER"))
+# varName <- fcontent$name
 
-
+paco_id <- as.vector(n)
+paco_n <- as.vector(n)
+patch_n <- as.vector(n)
+agb_co <- as.vector(n)
 for (i in 1:n){
   
-  h5read(fName[1],"/PACO_ID")
-  h5read(fName[1],"/PACO_N")
-  patch_n <- h5read(fName[1],"/PATCH_COUNT")
-  agb_co <- h5read(fName[1],'/AGB_CO');
-  ba_co <- h5read(fName[1],'/BA_CO');
-  balive_co <- h5read(fName[1],'/BALIVE');
+  paco_id[i] <- h5read(fName[i],"/PACO_ID")
+  paco_n[i] <- h5read(fName[i],"/PACO_N")
+  patch_n[i] <- h5read(fName[i],"/PATCH_COUNT")
+  nplant<-h5read(fName[i],'/NPLANT');
+  
+  
+  agb_co[i] <- mean(h5read(fName[i],'/AGB_CO'))*nplant;     #[kgC/plant].....sum
+  
+  ba_co <- mean(h5read(fName[1],'/BA_CO'))*nplant;
+  
+  balive_co <-mean(h5read(fName[1],'/BALIVE'))*nplant;
+  
   bdead_co <- h5read(fName[1],'/BDEAD');
+  
   btotal <- balive_co+bdead_co
+  
   bseeds_co <- h5read(fName[1],'/BSEEDS_CO');
+  
+  
   daylight <- h5read(fName[1],'/DAYLIGHT');
   dbh_co <- h5read(fName[1],'/DBH');
   dmean_a_net_co <- h5read(fName[1],'/DMEAN_A_NET_CO');
@@ -58,7 +71,7 @@ for (i in 1:n){
   hite<-h5read(fName[1],'/HITE');
   lai_co<-h5read(fName[1],'/LAI_CO');
   mort_rate_co<-h5read(fName[1],'/MORT_RATE_CO');
-  nplant<-h5read(fName[1],'/NPLANT');
+  
   pft<-h5read(fName[1],'/PFT');
   
 }

@@ -2,21 +2,24 @@ ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
   #rm(list = ls())
   library(rhdf5)
   library(ncdf4)
-  #y1=2014;m1=01;d1=01;y2=2019;m2=1;d2=04
+  y1=y1;m1=m1;d1=d1;y2=y2;m2=m2;d2=d2
+  #pfx = "hhh-D" 
   #setwd("~/bcal/Data02/projects-active/NASA_TE/ED/Outputs/shrub_output")
   
   
-  #pfx = "hhh-D"  
-  List <- list.files(pattern = pfx)
-  n=length(List)
+  
+  List1 <- list.files(pattern = pfx)
+  
   # The following step is just to make sure that dates are sorted 
   date1<-paste(y1,"-",m1,"-",d1,sep="")
   date2<-paste(y2,"-",m2,"-",d2,sep="")
   dd<-seq(as.Date(date1), as.Date(date2), by="days")
+  n=length(dd)
   pfx2 <- paste(pfx,"-",dd,sep = "")
-  pfx3 <- gsub(pfx2[1],"",List[1])
+  pfx3 <- "-000000-g01.h5"
+  #gsub(pfx2[2],"",List1[2])
   fName <- paste(pfx2,pfx3,sep="")
-
+  
   paco_id <- as.vector(n)
   paco_n <- as.vector(n)
   patch_n <- as.vector(n)
@@ -110,14 +113,25 @@ ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
     mort_rate_co[i]<-list(h5read(fName[i],'/MORT_RATE_CO'))
     pft[i]<-list(h5read(fName[i],'/PFT'))
     #names(which.max(table(pft)))               #the dominant pft
-    }
+    print(fName[i])
+  }
   dmean_soil_water_pa_mat <- t(matrix(unlist(dmean_soil_water_pa), ncol = 9, byrow = TRUE))
   df<-list(paco_id,paco_n,patch_n,nplant,agb_co,ba_co,balive_co,bdead_co,btotal,bseeds_co,
-                 daylight,dbh_co,dmean_atm_par_py,deman_atm_temp_py,deman_atm_rlong_py,deman_atm_rshort_py,
-                 dmean_available_water_pa,dmean_fs_open_co,dmean_fsn_co,dmean_fsw_co,dmean_gpp_co,dmean_leaf_gsw_py,
-                 dmean_npp_co,dmean_leaf_temp_co,dmean_nppcroot_py,dmean_nppfroot_py,dmean_par_l_co,dmean_pcpg_py,dmean_plresp_co,
-                 dmean_vapor_lc_co,dmean_sfcw_depth_pa,dmean_soil_water_pa_mat,dmean_transp_co,dmean_water_supply_co,dmean_wshed_lg_co,
-                 fast_soil_c_py,hite,lai_co,mort_rate_co,pft)
+           daylight,dbh_co,dmean_atm_par_py,deman_atm_temp_py,deman_atm_rlong_py,deman_atm_rshort_py,
+           dmean_available_water_pa,dmean_fs_open_co,dmean_fsn_co,dmean_fsw_co,dmean_gpp_co,dmean_leaf_gsw_py,
+           dmean_npp_co,dmean_leaf_temp_co,dmean_nppcroot_py,dmean_nppfroot_py,dmean_par_l_co,dmean_pcpg_py,dmean_plresp_co,
+           dmean_vapor_lc_co,dmean_sfcw_depth_pa,dmean_soil_water_pa_mat,dmean_transp_co,dmean_water_supply_co,dmean_wshed_lg_co,
+           fast_soil_c_py,hite,lai_co,mort_rate_co,pft,y1,m1,d1,y2,m2,d2)
+  
+  my_names<- c('paco_id','paco_n','patch_n','nplant','agb_co','ba_co','balive_co','bdead_co','btotal','bseeds_co',
+               'daylight','dbh_co','dmean_atm_par_py','deman_atm_temp_py','deman_atm_rlong_py','deman_atm_rshort_py',
+               'dmean_available_water_pa','dmean_fs_open_co','dmean_fsn_co','dmean_fsw_co','dmean_gpp_co','dmean_leaf_gsw_py',
+               'dmean_npp_co','dmean_leaf_temp_co','dmean_nppcroot_py','dmean_nppfroot_py','dmean_par_l_co','dmean_pcpg_py','dmean_plresp_co',
+               'dmean_vapor_lc_co','dmean_sfcw_depth_pa','dmean_soil_water_pa_mat','dmean_transp_co','dmean_water_supply_co','dmean_wshed_lg_co',
+               'fast_soil_c_py','hite','lai_co','mort_rate_co','pft','y1','m1','d1','y2','m2','d2')
+  #names(df) <- my_names
+  setNames(df,my_names)
+  
 }
 
 

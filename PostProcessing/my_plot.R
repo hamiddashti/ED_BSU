@@ -1,11 +1,25 @@
 my_plot<-function(df,var,steps,y1,m1,d1,y2,m2,d2,caption){
-  # This is daily plot
+  # This script is to plot ED out puts at diiferent time scales
+  # Inputs : 
+  #          df: dataframe which is produced by the ed_out.R function
+  #          var: The name of variable as it appear in ED (e.g. patch_n)
+  #          steps: a combination of interval and time scale (some examples: "1 year"; "5 days"; "2 month"
+  #                                                           note the space between the time interval and scale)
+  #          y1: first year of simulation
+  #          m1: first month of simulation
+  #          d1: first day of simulation
+  #          y2: second year of simulation
+  #          m2: second month of simulation
+  #          d2: second day of simulation
+  #          caption: the caption to be inserted under the photo( can be left empty: "")
+  # Example: my_plot(df =df,var = "fast_soil_c_py",steps = '1 year',y1 = 2014,m1 = 01,d1 = 01,
+  #                  y2 = 2018,m2 = 12,d2 = 31,caption = "C3grass_phenology_2_h2olim_2")
+  # ----------------------------------------------------------------------------------------------------------------------
   library('ggplot2')
-  
   library('astsa')
   
-  #y1=2014;m1=01;d1=01;y2=2018;m2=12;d2=31;steps="1 year";var="dmean_soil_water_pa_mat";caption = "C3grass_phenology_2_h2olim_2"
-  
+  # some of the variables such as "dmean_soil_water_pa_mat" are matrix...
+  # For now script just plot the
   if (var=="dmean_soil_water_pa_mat"){
     v1=df[var]
     v2<-v1$dmean_soil_water_pa_mat
@@ -82,7 +96,7 @@ my_plot<-function(df,var,steps,y1,m1,d1,y2,m2,d2,caption){
   if(var=="mort_rate_co"){ylabel_p="mortality rate";unit="[1/yr]"}  
   #if(var=="pft"){ylabel_p="Plant functional type";unit=""}  
   
-  graphics.off()
+
   
   # The commented codes are for ploting all the soil layers
   # if (var=="dmean_soil_water_pa_mat"){
@@ -91,7 +105,7 @@ my_plot<-function(df,var,steps,y1,m1,d1,y2,m2,d2,caption){
   #     plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
   #   p
   # } 
- 
+  graphics.off()
   p=ggplot(data, aes(x=tmp_time)) +geom_line(aes(y=Data),col='black',size=1.5) + 
     labs(x="Time",caption=caption, y=paste(ylabel_p,unit))+ theme_bw()+theme(text = element_text(size=18),
         plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))

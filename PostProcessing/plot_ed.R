@@ -3,17 +3,14 @@ setwd("~/bcal/Data02/projects-active/NASA_TE/ED/Outputs/C3grass_phenology_2_h2ol
 source('ed_out.R')
 source('my_plot.R')
 #df<-ed_out(y1=2014,m1=01,d1=01,y2=2018,m2=12,d2=31,pfx = "hhh-D")
-
+#save(df,file='df.rda')
 
 
 load('df.rda')
 
 
-my_plot(df =df,var = "mort_rate_co",steps = '1 year',y1 = 2014,m1 = 01,d1 = 01,
+my_plot(df =df,var = "fast_soil_c_py",steps = '1 year',y1 = 2014,m1 = 01,d1 = 01,
         y2 = 2018,m2 = 12,d2 = 31,caption = "C3grass_phenology_2_h2olim_2")
-
-#df<-ed_out(y1=2014,m1=01,d1=01,y2=2018,m2=12,d2=31,pfx = "hhh-D")
-#save(df,file='df.rda')
 
 # variable names and numbers in the df
 # [1] "paco_id"                  "paco_n"                   "patch_n"                  "nplant"                   "agb_co"                  

@@ -1,6 +1,7 @@
 ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
 
   #--------------- Extracting daily ED outputs-----------------------------------
+  # NOTE : Parameteres are extracted per polygone (averaged or summed across all the cohorts) 
   # Inputs :   
   #             y1: first year of simulation
   #             m1: first month of simulation

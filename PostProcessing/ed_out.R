@@ -3,6 +3,7 @@ ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
   library(rhdf5)
   library(ncdf4)
   y1=y1;m1=m1;d1=d1;y2=y2;m2=m2;d2=d2
+  #y1=2014;m1=01;d1=01;y2=2019;m2=01;d2=03
   #pfx = "hhh-D" 
   #setwd("~/bcal/Data02/projects-active/NASA_TE/ED/Outputs/shrub_output")
   
@@ -71,13 +72,13 @@ ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
     patch_n[i] <- h5read(fName[i],"/PATCH_COUNT")
     nplant[i]<-sum(h5read(fName[i],'/NPLANT'))
     agb_co[i] <- mean(h5read(fName[i],'/AGB_CO'))*nplant[i];     #[kgC/plant].....sum
-    ba_co[i] <- mean(h5read(fName[i],'/BA_CO'))*nplant[i];
+    ba_co[i] <- mean(h5read(fName[i],'/BA_CO'))*nplant[i]
     balive_co[i] <-mean(h5read(fName[i],'/BALIVE'))*nplant[i]
     bdead_co[i] <- mean(h5read(fName[i],'/BDEAD'))*nplant[i]
     btotal[i]<- balive_co[i]+bdead_co[i]
     bseeds_co[i] <- sum(h5read(fName[i],'/BSEEDS_CO'))
     daylight[i] <- h5read(fName[i],'/DAYLIGHT')/3600;      #hours
-    dbh_co <- mean(h5read(fName[i],'/DBH'))            #?????
+    dbh_co [i]<- mean(h5read(fName[i],'/DBH'))            #?????
     # dmean_a_net_co <- h5read(fName[1],'/DMEAN_A_NET_CO')                    # Daily mean - Actual assimilation rate    
     dmean_atm_par_py[i] <- h5read(fName[i],'/DMEAN_ATM_PAR_PY');                       # Daily mean - Albedo - direct radiation  
     deman_atm_temp_py[i] <- h5read(fName[i],'/DMEAN_ATM_TEMP_PY');
@@ -109,9 +110,9 @@ ed_out <- function(y1,m1,d1,y2,m2,d2,pfx){
     struct_soil_c_py[i]<-h5read(fName[i],'/STRUCT_SOIL_C_PY') 
     fast_soil_n_py[i]<-h5read(fName[i],'/FAST_SOIL_N_PY');
     hite[i]<-mean(h5read(fName[i],'/HITE'))
-    lai_co<-sum(h5read(fName[i],'/LAI_CO'))
+    lai_co[i]<-sum(h5read(fName[i],'/LAI_CO'))
     mort_rate_co[i]<-list(h5read(fName[i],'/MORT_RATE_CO'))
-    pft[i]<-list(h5read(fName[i],'/PFT'))
+    #pft[i]<-list(h5read(fName[i],'/PFT'))
     #names(which.max(table(pft)))               #the dominant pft
     print(fName[i])
   }

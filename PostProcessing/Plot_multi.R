@@ -16,6 +16,8 @@ save(df3,file='df3.rda')
 setwd('/home/hamiddashti/bcal/Data02/bcal/Personal/hamid/ed/test/output_phen-0-xml/')
 df4_xml<-ed_out(y1=2014,m1=01,d1=01,y2=2019,m2=12,d2=29,pfx = "hhh-D")
 save(df4_xml,file='df4.rda')
+ddd
+
 
 
 t0 = df0$lai_co

@@ -1,0 +1,423 @@
+ <?xml version="1.0"?>
+ <config>
+   <pft>
+      <num>
+                  12
+      </num>
+      <is_tropical>
+                   0
+      </is_tropical>
+      <is_grass>
+                   0
+      </is_grass>
+
+      <include_pft_ag>
+                   0
+      </include_pft_ag>
+
+      <include_pft_fp>
+                   0
+      </include_pft_fp>
+
+      <clumping_factor>
+                           0.84
+      </clumping_factor>
+
+   <!-- (should fix ed_xml_config.f90; OK for now -->
+      <leaf_emiss_tir>
+                           0.97
+      </leaf_emiss_tir>
+
+      <wood_emiss_tir>
+                           0.9
+      </wood_emiss_tir>
+
+      <leaf_reflect_vis>
+                           0.3
+      </leaf_reflect_vis>
+
+      <leaf_reflect_nir>
+                           0.57000
+      </leaf_reflect_nir>
+
+      <wood_reflect_vis>
+                           0.11
+      </wood_reflect_vis>
+
+      <wood_reflect_nir>
+                           0.25
+      </wood_reflect_nir>
+
+      <leaf_trans_vis>
+                           0.16
+      </leaf_trans_vis>
+
+      <leaf_trans_nir>
+                           0.2
+      </leaf_trans_nir>
+    
+      <wood_trans_vis>
+                           0.1
+      </wood_trans_vis>
+
+      <wood_trans_nir>
+                           0.1
+      </wood_trans_nir>
+<!-- (all the scatter backscatter, phi1, phi2, mu_bar are clculated outside of ed_param; so should be deleted here) 
+       <leaf_backscatter_vis>
+                           0.00000000000000000000
+      </leaf_backscatter_vis>
+      <leaf_backscatter_nir>
+                           0.00000000000000000000
+      </leaf_backscatter_nir>
+      <leaf_backscatter_tir>
+                           0.62500000000000000000
+      </leaf_backscatter_tir>
+      <wood_backscatter_vis>
+                           0.00000000000000000000
+      </wood_backscatter_vis>
+      <wood_backscatter_nir>
+                           0.00000000000000000000
+      </wood_backscatter_nir>
+      <wood_backscatter_tir>
+                           0.62500000000000000000
+      </wood_backscatter_tir>
+      <leaf_scatter_vis>
+                           0.00000000000000000000
+      </leaf_scatter_vis>
+      <leaf_scatter_nir>
+                           0.00000000000000000000
+      </leaf_scatter_nir>
+      <wood_scatter_vis>
+                           0.00000000000000000000
+      </wood_scatter_vis>
+      <wood_scatter_nir>
+                           0.00000000000000000000
+      </wood_scatter_nir>
+      <phi1>
+                           0.00000000000000000000
+      </phi1>
+      <phi2>
+                           0.00000000000000000000
+      </phi2>
+      <mu_bar>
+                           0.00000000000000000000
+      </mu_bar>
+
+-->
+     
+      <photosyn_pathway>
+                   3
+      </photosyn_pathway>
+      
+      <quantum_efficiency>  <!-- (alpha_c3 in ED2IN) -->
+                 0.0799999982
+      </quantum_efficiency>
+
+      <Vm0>
+                16.5
+      </Vm0>
+
+      <Vm_low_temp>
+                 4.7137
+      </Vm_low_temp>
+
+      <Vm_high_temp>
+                45.0
+      </Vm_high_temp>
+
+      <Vm_decay_e>
+                 0.40
+      </Vm_decay_e>
+
+      <Vm_decay_a>
+            220000.0
+      </Vm_decay_a>
+
+      <Vm_decay_b>
+               690.0
+      </Vm_decay_b>
+
+      <vm_hor>
+              3000.0
+      </vm_hor>
+
+      <vm_q10>   <!-- vm_q10 = q10_c3 in ED2IN--> 
+                 2.4000000954
+      </vm_q10>
+
+      <dark_respiration_factor>  <!-- gamma_c3 in ED2IN-->
+                 0.0144999996
+      </dark_respiration_factor>
+     
+ <!-- (Rd_low_temp = Vm_low_tmp in ed_param.f90 same for Rd_high, Rd_decay and Rd_hor) 
+      <Rd_low_temp>
+                 4.7136998177
+      </Rd_low_temp>
+
+      <Rd_high_temp>
+                45.0000000000
+      </Rd_high_temp>
+      <Rd_decay_e>
+                 0.4000000060
+      </Rd_decay_e>
+      <Rd_hor>
+              3000.0000000000
+      </Rd_hor>
+
+ --> 
+<!-- Rd_q10 = vm_q10
+      <Rd_q10>
+                 2.4000000954
+      </Rd_q10>
+-->
+<!-- D0 = d0_tree in ED2IN)
+      <D0>
+                 0.0160000008
+      </D0>
+-->
+<!-- stomatal_slope = mphoto_trc3 in ED2IN 
+      <stomatal_slope>
+                 7.0000000000
+      </stomatal_slope>
+-->
+<!-- cuticular_cond=bphoto_blc3
+      <cuticular_cond>
+              1000.0000000000
+      </cuticular_cond>
+-->
+<!-- water conductance depend on kw_tree = 600 in ED2IN 
+      <water_conductance>
+                 0.0000190132
+      </water_conductance>
+-->
+<!-- leaf_width = lwidth_bltree in ED2IN 
+      <leaf_width>
+                 0.0500000007
+      </leaf_width>
+--> 
+      <growth_resp_factor>
+                 0.3333333333
+      </growth_resp_factor>
+
+      <leaf_turnover_rate>
+                 1.0
+      </leaf_turnover_rate>
+
+      <root_turnover_rate>
+                 0.44
+      </root_turnover_rate>
+
+      <storage_turnover_rate>
+                 0.6243000
+      </storage_turnover_rate>
+
+      <f_labile>
+                 0.790
+      </f_labile>
+<!-- root_respiration_factor = 0.528 * rrffact and is the same for all pfts
+      <root_respiration_factor>
+                 0.5279999971
+      </root_respiration_factor>
+-->
+<!--  rrf_low_temp = rd_low_temp and same for high, decay...
+      <rrf_low_temp>
+                 4.7136998177
+      </rrf_low_temp>
+      <rrf_high_temp>
+                45.0000000000
+      </rrf_high_temp>
+      <rrf_decay_e>
+                 0.4000000060
+      </rrf_decay_e>
+      <rrf_hor>
+              3000.0000000000
+      </rrf_hor>
+      <rrf_q10>
+                 2.4000000954
+      </rrf_q10>
+
+-->
+      <frost_mort>
+                 3.0
+      </frost_mort>
+
+      <mort0>
+                 0.0
+     </mort0>
+
+      <mort1>
+                 1.00
+      </mort1>
+
+      <mort2>
+                20.0
+      </mort2>
+
+      <mort3>
+                 0.0010
+      </mort3>
+<!-- cbr_severe_stress(1:18) = log(epsilon(1.0)) / mort2(1:18)
+      <cbr_severe_stress>
+                -0.7971192002
+      </cbr_severe_stress>
+
+--> 
+      <seedling_mortality>
+                 0.950
+      </seedling_mortality>
+
+<!-- treefall_s_gtht(1:18)    = 0.0  
+      <treefall_s_gtht>
+                 0.0
+      </treefall_s_gtht>
+-->
+      <treefall_s_ltht>
+                 0.100
+      </treefall_s_ltht>
+<!--  fire_s_gtht(1:18)    = 0.0     
+      <fire_s_gtht>
+                 0.0000000000
+      </fire_s_gtht>
+-->
+      <rho>
+                 0.0
+      </rho>
+
+      <SLA>
+                4.50
+      </SLA>
+
+      <horiz_branch>
+                 0.50
+      </horiz_branch>
+
+      <q>
+                 6.00
+      </q>
+
+      <sapwood_ratio>
+              3900.0
+      </sapwood_ratio>
+<!-- gsw = SLA
+      <qsw>
+                 0.0056410255
+      </qsw>
+--> 
+<!-- It initialized inside ed_params.90
+      <init_density>
+                 0.1000000015
+      </init_density>
+-->
+
+      <b1Ht>
+                 4.756200
+      </b1Ht>
+      <b2Ht>
+                -0.002594000
+      </b2Ht>
+      <hgt_ref>
+                 0.00
+      </hgt_ref>
+      <hgt_min>
+                 0.250000
+      </hgt_min>
+      <hgt_max>
+                 2.5000000000
+      </hgt_max>
+<!-- Theses are calculated inside ed_params.90
+      <min_dbh>
+                 0.5023847222
+      </min_dbh>
+      <dbh_crit>
+                 3.9943094254
+      </dbh_crit>
+      <dbh_adult>
+                10.0000000000
+      </dbh_adult>
+      <dbh_bigleaf>
+                 3.9943094254
+      </dbh_bigleaf>
+--> 
+      <b1Bl_small>
+                 0.000002582
+      </b1Bl_small>
+
+      <b2Bl_small>
+                 2.746
+      </b2Bl_small>
+
+      <b1Bs_small>
+                 0.00000005709
+      </b1Bs_small>
+
+      <b1Ca>
+                 0.0000635
+      </b1Ca>
+      <b2Ca>
+                 2.18000000
+      </b2Ca>
+      <b1WAI>
+                 0.0096  <!-- (0.0192*0.5)-->
+      </b1WAI>
+      <b2WAI>
+                 1.464800000
+      </b2WAI>
+
+      <agf_bs>
+                 0.70
+      </agf_bs>
+      <b1Vol>
+                  0.00002035 
+      </b1Vol>
+      <b2Vol>
+                 2.314000000
+      </b2Vol>
+      <b1Rd>
+                -3.0
+      </b1Rd>
+      <b2Rd>
+                 0.150
+      </b2Rd>
+
+      <phenology>
+             0    <!-- {0,1,2,3,4} = {evergreen, drought deciduous, cold deciduous, light controlled,  drought decisuous based on 10 days} -->
+      </phenology>
+
+      <c_grn_leaf_dry>
+          3218.0
+      </c_grn_leaf_dry>
+
+      <wat_dry_ratio_grn>
+          2.500000
+      </wat_dry_ratio_grn>
+
+      <wat_dry_ratio_ngrn>
+          0.70
+      </wat_dry_ratio_ngrn>
+
+      <b1Cl>
+          1.0
+      </b1Cl>
+      <b2Cl>
+          1.0
+      </b2Cl>
+      <r_fract>
+                 0.3000000000
+      </r_fract>
+
+      <st_fract>
+                 0.0000000000
+      </st_fract>
+
+      <nonlocal_dispersal>
+                 0.32500000
+      </nonlocal_dispersal>
+
+      <repro_min_h>
+                 0.2500000000
+      </repro_min_h>
+
+   </pft>
+
+ </config>

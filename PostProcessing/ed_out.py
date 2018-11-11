@@ -1,8 +1,17 @@
-# This script extract the Ed outputs for the simulation range and save it in a out.dat file
-# out.dat file will be used in the instruction file of the PEST
 
-#import sys
-#sys.modules[__name__].__dict__.clear()
+
+##############################################################################
+
+# This script extract the Ed daily outputs for the simulation range and save it in a csv filei
+
+    # arg1: "Year-Month-Day"
+    # arg2: "Year-Month-Day"
+    # arg3: "Output file name" 
+
+    #Example: python ed_out.py "2000-01-01" "2016-12-30" "output"
+
+##############################################################################
+
 import sys
 def ed_out(date1,date2,fname):
     import h5py as h5

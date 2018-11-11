@@ -1,8 +1,18 @@
-# This script extract the Ed outputs for the simulation range and save it in a out.dat file
-# out.dat file will be used in the instruction file of the PEST
 
-#import sys
-#sys.modules[__name__].__dict__.clear()
+
+##############################################################################
+
+# This script extract the Ed daily outputs for the simulation range and save it in a csv filei
+
+    # arg1: "Year-Month-Day"
+    # arg2: "Year-Month-Day"
+    # arg3: "Output file name" 
+
+    #Example: python ed_out.py "2000-01-01" "2016-12-30" "output"
+
+##############################################################################
+
+import sys
 def ed_out(date1,date2,fname):
     import h5py as h5
     import numpy as np
@@ -11,7 +21,7 @@ def ed_out(date1,date2,fname):
     from datetime import date, datetime, timedelta
     import pandas as pd
     import csv
-    
+        
     #f = h5.File("NEON-DS-Imaging-Spectrometer-Data.h5", "r")
     #datasetNames = [n for n in f.keys()]
     #NPLANT = sum(f['NPLANT'])
@@ -24,7 +34,7 @@ def ed_out(date1,date2,fname):
             yield curr
             curr += delta
     indir=os.getcwd()
-    pfx2="hhh-D-"
+    pfx2="/hhh-D-"
     pfx3="-000000-g01.h5"
     y1=int(date1[0:4])
     m1=int(date1[5:7])
@@ -84,15 +94,13 @@ def ed_out(date1,date2,fname):
     
     outdir="/home/hdashti/BCAL/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
     fout = outdir+fname+".csv"
-    df.to_csv(fout, index=False)
+    df.to    (fout, index=False)
     
     print("WARNING! WARNING! WARNING!\n")
-    print("Your current directory is:{}\n".format(indir))
-    print("Your output directory is:{}\n".format(outdir))
-    print("If in or out dir is wrong change indir or outdir in the code")    
-    
-
-
-
-
+    print("CURRENT DIRECTORY:{}\n".format(indir))
+    print("OUTPUT DIRECTORY:{}\n".format(outdir))
+    print("If in or out dir is wrong change indir or outdir in the code\n")    
+if __name__ == '__main__':
+    # Map command line arguments to function arguments.
+    ed_out(*sys.argv[1:])
 

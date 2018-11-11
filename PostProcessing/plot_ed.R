@@ -1,7 +1,13 @@
+
+
+# This script is to plot ED outputs that are in csv format
+
+
 rm(list = ls())
-setwd("~/bcal/Data02/projects-active/NASA_TE/ED/Outputs/C3grass_phenology_2_h2olim_2")
-source('ed_out.R')
-source('my_plot.R')
+setwd("N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis")
+source('N:/Data02/bcal/Personal/hamid/ED_BSU-master/PostProcessing/my_plot.R')
+
+df = read.csv("100years.csv", header = TRUE)
 #df<-ed_out(y1=2014,m1=01,d1=01,y2=2018,m2=12,d2=31,pfx = "hhh-D")
 #save(df,file='df.rda')
 

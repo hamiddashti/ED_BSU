@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE config SYSTEM "caxuana">
+<config>
+  <phenology>
+    <iphen_scheme>
+               -1
+    </iphen_scheme>
+  </phenology>
+</config>
+ 

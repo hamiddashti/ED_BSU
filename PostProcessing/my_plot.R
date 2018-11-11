@@ -1,4 +1,4 @@
-my_plot<-function(date1, date2, var){
+my_plot<-function(df,date1, date2, var){
   # This script is to plot ED out puts at diiferent time scales
   # Inputs : 
   #          df: dataframe which is produced by the ed_out.py function
@@ -7,11 +7,7 @@ my_plot<-function(date1, date2, var){
   #                  y2 = 2018,m2 = 12,d2 = 31,caption = "C3grass_phenology_2_h2olim_2")
   # ----------------------------------------------------------------------------------------------------------------------
   library('ggplot2')
-
-#  var="GPP"  
-#  date1="1915-01-01"
-#  date2="1916-01-30"
-  
+  df=df
   if (date1 < as.Date(df$dates[1]) |date2 > as.Date(df$dates[dim(df)[1]])) {
    print("The input dates are out of range") 
   } else {

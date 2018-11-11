@@ -21,7 +21,7 @@ def perdelta(start, end, delta):
     while curr < end:
         yield curr
         curr += delta
-pfx1="/home/hdashti/scratch/ED_BSU/old_ed2/26jan17/ED/output1/"
+pfx1="/home/hdashti/scratch/ED_BSU/old_ed2/26jan17/ED/test/"
 pfx2="hhh-D-"
 pfx3="-000000-g01.h5"
 

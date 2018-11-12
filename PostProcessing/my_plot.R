@@ -14,6 +14,11 @@ my_plot<-function(df,date1, date2, var){
   
   data <- df[which(as.Date(df$dates)>=as.Date(date1) & as.Date(df$dates)<=as.Date(date2)),]
   if(var=="GPP"){ylabel_p="Daily mean gross primary productivity ";unit="[kgC/m2/yr]"}  
+  if(var=="NPP"){ylabel_p="Daily mean net primary productivity ";unit="[kgC/m2/yr]"}  
+  if(var=="FSC"){ylabel_p="Fast soil carbon ";unit="[kgC/m2]"}  
+  if(var=="SSC"){ylabel_p="Slow soil carbon ";unit="[kgC/m2]"}  
+  if(var=="STC"){ylabel_p="Structural soil carbon ";unit="[kgC/m2]"}  
+  if(var=="ATC"){ylabel_p="Atmosphere carbon concentration ";unit="[ppm]"}  
   
   graphics.off()
   

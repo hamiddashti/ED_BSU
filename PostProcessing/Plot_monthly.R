@@ -1,11 +1,29 @@
-####
-rm(list=ls())
+
+
+##########################################################
+# This function plots montly data the data extracted from the csv file which is 
+# poroduced with ed_out_monthly.py
+# Example plot_monthly('2014-01','2016-02',"output.csv")
+plot_monthly <- function(date1,date2,file){
+#rm(list=ls())
 library(ggplot2)
 library(zoo)
 library(reshape2)
 #setwd("C:/ED")  When using mylaptop!
 setwd("N:/Data02/bcal/Personal/hamid/ED_BSU")
-df = read.csv("PFT.csv", header = TRUE)
+pfx1 <- "N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
+pfx2 <- file
+File <- paste0(pfx1,pfx2)
+
+df <- read.csv(File, header = TRUE)
+I1 <- which(df$dates==date1)
+I2 <- which(df$dates==date2)
+tmp <- I2-I1
+
+if (tmp < 5){print("Provide a wider range of dates: you might get error")}
+
+df <- df[I1:I2,]
+
 output <- matrix(0L,ncol=dim(df)[1], nrow=18)
 rownames(output) <- c('C4 grass','Early tropical','Mid tropical','late tropical ',
                     'temperate C3 grass ','northern pine','southern pines','late conifers',
@@ -18,11 +36,13 @@ colnames(output) <- dates
 for (i in 1:dim(df)[1]){
   
   pft_tmp <- as.character(df$PFT[i])
-  pft_tmp<-gsub("[()]", "", pft_tmp)
-  PFT=as.numeric(strsplit(pft_tmp,split=", ",fixed=TRUE)[[1]])
+  pft_tmp <- gsub("[()]", "", pft_tmp)
+  pft_tmp <- gsub(",$", "", pft_tmp)
+  PFT <- as.numeric(strsplit(pft_tmp,split=", ",fixed=TRUE)[[1]])
   
   nplant_tmp <- as.character(df$NPLANT[i])
   nplant_tmp<-gsub("[()]", "", nplant_tmp)
+  nplant_tmp <- gsub(",$", "", nplant_tmp)
   NPLANT=as.numeric(strsplit(nplant_tmp,split=", ",fixed=TRUE)[[1]])
   
   groups <- split(NPLANT, PFT)
@@ -91,6 +111,6 @@ data2$variable <- c
                        axis.title=element_text(size=14,face="bold"),
                        legend.text=element_text(size=10,face="bold")) +scale_x_yearmon(format="%b-%Y", n=5)
   
-
+}
 
 

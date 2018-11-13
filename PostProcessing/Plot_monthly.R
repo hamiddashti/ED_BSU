@@ -3,14 +3,14 @@
 ##########################################################
 # This function plots montly data the data extracted from the csv file which is 
 # poroduced with ed_out_monthly.py
-# Example plot_monthly('2014-01','2016-02',"output.csv")
-plot_monthly <- function(date1,date2,file){
+# Example plot_monthly('2014-01','2016-02',"output.csv","var")
+plot_monthly <- function(date1,date2,file,var){
 #rm(list=ls())
 library(ggplot2)
 library(zoo)
 library(reshape2)
 #setwd("C:/ED")  When using mylaptop!
-setwd("N:/Data02/bcal/Personal/hamid/ED_BSU")
+
 pfx1 <- "N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
 pfx2 <- file
 File <- paste0(pfx1,pfx2)
@@ -32,20 +32,26 @@ rownames(output) <- c('C4 grass','Early tropical','Mid tropical','late tropical 
                     'agricultural PFTs','agricultural PFTs','Subtropical C3 grass ','Araucaria"','Shrub')
 dates <- as.character(df$dates)
 colnames(output) <- dates
-
+a=df[[var]]
 for (i in 1:dim(df)[1]){
-  
+ 
   pft_tmp <- as.character(df$PFT[i])
   pft_tmp <- gsub("[()]", "", pft_tmp)
   pft_tmp <- gsub(",$", "", pft_tmp)
   PFT <- as.numeric(strsplit(pft_tmp,split=", ",fixed=TRUE)[[1]])
   
-  nplant_tmp <- as.character(df$NPLANT[i])
-  nplant_tmp<-gsub("[()]", "", nplant_tmp)
-  nplant_tmp <- gsub(",$", "", nplant_tmp)
-  NPLANT=as.numeric(strsplit(nplant_tmp,split=", ",fixed=TRUE)[[1]])
   
-  groups <- split(NPLANT, PFT)
+  var_tmp <- as.character(a[i])
+  var_tmp <- gsub("[()]", "", var_tmp)
+  var_tmp <- gsub(",$", "", var_tmp)
+  VAR <- as.numeric(strsplit(var_tmp,split=", ",fixed=TRUE)[[1]])
+  
+  #nplant_tmp <- as.character(df$NPLANT[i])
+  #nplant_tmp<-gsub("[()]", "", nplant_tmp)
+  #nplant_tmp <- gsub(",$", "", nplant_tmp)
+  #NPLANT=as.numeric(strsplit(nplant_tmp,split=", ",fixed=TRUE)[[1]])
+  
+  groups <- split(VAR, PFT)
   pft_name <- names(groups) 
   
   for (j in 1:length(groups)){ 
@@ -103,12 +109,20 @@ b=as.character(a)
 c=as.yearmon(b)
 data2$variable <- c
 
+if (var=="NPLANT"){
+  ytitle = "Density [plant/m2]\n"
+} else if (var=="AGB"){
+  ytitle = "Biomass [kg/m2]\n"
+} else if (var=="LAI"){
+  ytitle = "LAI [m2/m2]\n"
+}
+
   ggplot(data2, aes(x=variable, y=value, fill=row)) + 
-  geom_bar(stat="identity") + xlab("\nDate") + ylab("Density [plant/m2]\n")+
+  geom_bar(stat="identity") + xlab("\nTime") + ylab(ytitle)+
      theme_bw() +  guides(fill=guide_legend(title="PFTs"))+
     theme(axis.text.x = element_text(angle = 90, hjust = 1)
                        ,axis.text=element_text(size=12),
-                       axis.title=element_text(size=14,face="bold"),
+                       axis.title=element_text(size=12,face="bold"),
                        legend.text=element_text(size=10,face="bold")) +scale_x_yearmon(format="%b-%Y", n=5)
   
 }

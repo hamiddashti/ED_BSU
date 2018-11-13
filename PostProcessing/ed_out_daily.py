@@ -8,7 +8,7 @@
     # arg2: "Year-Month-Day"
     # arg3: "Output file name" 
 
-    #Example: python ed_out.py "2000-01-01" "2016-12-30" "output"
+    #Example: python ed_out_daily.py "2000-01-01" "2016-12-30" "output"
 
 ##############################################################################
 
@@ -65,10 +65,8 @@ def ed_out(date1,date2,fname):
     SSC=[]           # Slow soil carbon [kg/m2]
     stc_tmp=[]
     STC=[]          # Structural soil carbon [kg/m2]
-    atc_tmp=[]
-    ATC=[]          # Atmospheric CO2 [ppm]
-    leaf_drop_tmp=[]
-    LEAF_DROP=[]
+    #leaf_drop_tmp=[]
+    #LEAF_DROP=[]
     
     
     for f in names:
@@ -83,14 +81,10 @@ def ed_out(date1,date2,fname):
         SSC.append(ssc_tmp)
         stc_tmp = name_tmp['STRUCT_SOIL_C_PY'][0]
         STC.append(stc_tmp)
-        atc_tmp=name_tmp['DMEAN_ATM_CO2_PY'][0]
-        ATC.append(atc_tmp)
-        
+           
     
-    
-    
-    df = pd.DataFrame({"dates":dates,"GPP":GPP,"NPP":NPP,"FSC":FSC,"SSC":SSC,"STC":STC,"ATC[ppm]":ATC})
-    df = df[['dates','GPP','NPP','FSC','SSC','STC','ATC[ppm]']]
+    df = pd.DataFrame({"dates":dates,"GPP":GPP,"NPP":NPP,"FSC":FSC,"SSC":SSC,"STC":STC})
+    df = df[['dates','GPP','NPP','FSC','SSC','STC']]
     
     outdir="/home/hdashti/BCAL/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
     fout = outdir+fname+".csv"

@@ -8,7 +8,7 @@
     # arg2: "Year-Month-Day"
     # arg3: "Output file name" 
 
-    #Example: python ed_out.py "2000-01-01" "2016-12-30" "output"
+    #Example: python ed_out_monthly.py "2000-01-01" "2016-12-30" "output"
 
 ##############################################################################
 
@@ -63,6 +63,10 @@ def ed_out_monthly(date1,date2,fname):
     PFT=[]
     nplant_tmp=[]
     NPLANT=[]
+    agb_tmp=[]
+    AGB=[]
+    lai_tmp=[]
+    LAI=[]
     for f in names:
         name_tmp = h5.File(f,"r")
         pft_tmp = name_tmp['PFT']
@@ -71,8 +75,16 @@ def ed_out_monthly(date1,date2,fname):
         nplant_tmp = name_tmp['NPLANT']
         nplant_tmp = tuple(nplant_tmp.value)
         NPLANT.append(nplant_tmp)
+        lai_tmp = name_tmp['LAI_CO']
+        lai_tmp = tuple(lai_tmp.value)
+        LAI.append(lai_tmp)
+        agb_tmp = name_tmp['AGB_CO']
+        agb_tmp = tuple(agb_tmp.value)
+        AGB.append(agb_tmp)
 
-    df = pd.DataFrame({"dates":dates,"PFT":PFT,"NPLANT":NPLANT})
+
+    df = pd.DataFrame({"dates":dates,"PFT":PFT,"NPLANT":NPLANT,"LAI":LAI,"AGB":AGB})
+    df = df[['dates','PFT','NPLANT','LAI','AGB']]
     outdir="/home/hdashti/BCAL/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
     fout = outdir+fname+".csv"
     df.to_csv(fout, index=False)

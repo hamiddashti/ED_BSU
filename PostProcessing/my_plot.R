@@ -3,8 +3,7 @@ my_plot<-function(df,date1, date2, var){
   # Inputs : 
   #          df: dataframe which is produced by the ed_out.py function
   #          var: The name of variable as it appear in ED (e.g. GPP)
-  # Example: my_plot(df =df,var = "fast_soil_c_py",steps = '1 year',y1 = 2014,m1 = 01,d1 = 01,
-  #                  y2 = 2018,m2 = 12,d2 = 31,caption = "C3grass_phenology_2_h2olim_2")
+  # Example: 
   # ----------------------------------------------------------------------------------------------------------------------
   library('ggplot2')
   df=df
@@ -23,11 +22,12 @@ my_plot<-function(df,date1, date2, var){
   graphics.off()
   
   ggplot(data = data, aes(x =as.Date(data$dates), y = data[[var]]))+
-  geom_line(color = "#00AFBB", size = 2) +
+  geom_line(color = "#00AFBB", size = 1) +
     labs(x="Time", y=paste(ylabel_p,unit))+
-    theme_bw()+theme(text = element_text(size=14),plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
-  
+    theme_bw()+theme(text = element_text(size=12),plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+     #ggsave("output.pdf",width = 6.5, height = 4.5)
   }
+  
 }
 
   

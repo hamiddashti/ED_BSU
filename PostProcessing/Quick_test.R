@@ -1,6 +1,6 @@
 rm(list=ls())
 
-setwd("N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/EX6_60")
+setwd("N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis")
 
 library(rhdf5)
 
@@ -53,6 +53,13 @@ plot(NPP_PY,ty="l")
 colSums(pft)
 
 
+############################################################
+# testing one file at a time 
+rm(list=ls())
+fName <- "hhh-E-2014-11-00-000000-g01.h5"
+var1 <- h5read(fName,"/LAI_PY")
+var2 <- h5read(fName,"/LAI_CO")
+var3 <- h5read(fName,"/PFT")
 
 
 

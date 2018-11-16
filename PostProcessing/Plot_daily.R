@@ -1,4 +1,4 @@
-my_plot<-function(df,date1, date2, var){
+Plot_daily<-function(df,date1, date2, var){
   # This script is to plot ED out puts at diiferent time scales
   # Inputs : 
   #          df: dataframe which is produced by the ed_out.py function

@@ -2,15 +2,21 @@
 
 rm(list = ls())
 setwd("N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis")
-source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/my_plot.R')
+source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/Plot_daily.R')
 source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/Plot_monthly.R')
 
 ############################################################
 # List of daily variables : GPP, NPP, FSC, SSC, STC
 # List of monthly variables: NPLANT, LAI, AGB
 
-df = read.csv("200_years_v2_bare_D.csv", header = TRUE)
-my_plot(df,"1817-01-01","2016-11-29","GPP")  # This is for daily plots
+df = read.csv("100_years_cloned_daily.csv", header = TRUE)
+Plot_daily(df,"2000-01-01","2016-11-29","NPP")  # This is for daily plots
+plot_monthly('1918-01','2016-11',"100_years_cloned_monthly.csv","NPLANT")  # this is for monthly plot
+
+
+
+df = read.csv("100_years_cloned_daily.csv", header = TRUE)
+Plot_daily(df,"1918-01-01","2016-11-29","NPP")  # This is for daily plots
 ggsave("GPP_200y.png",width = 6.5, height = 4.5)
 
 my_plot(df,"1817-01-01","2016-11-29","FSC")  # This is for daily plots
@@ -23,7 +29,7 @@ my_plot(df,"1817-01-01","2016-11-29","STC")  # This is for daily plots
 ggsave("STC_200y.png",width = 6.5, height = 4.5)
 
 
-plot_monthly('1817-01','2016-11',"200_years_v2_bare.csv","LAI")  # this is for monthly plot
+plot_monthly('2016-01','2016-11',"test3_monthly.csv","LAI")  # this is for monthly plot
 ggsave("LAI_200y.png",width = 6.5, height = 4.5)
 
 plot_monthly('1817-01','2016-11',"200_years_v2_bare.csv","NPLANT")  # this is for monthly plot

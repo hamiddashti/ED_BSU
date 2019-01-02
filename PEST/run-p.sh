@@ -64,5 +64,8 @@ pestpp-gsa twofit /h r2:4004 &
 
 
 cd /home/hdashti/scratch/working/wrk16/
+pestpp-gsa twofit /h r2:4004 &
+
+cd /home/hdashti/scratch/working/wrk17/
 pestpp-gsa twofit /h r2:4004
 

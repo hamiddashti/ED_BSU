@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cp -r master/ wrk1
+cp -r master/ wrk2
+cp -r master/ wrk3
+cp -r master/ wrk4
+cp -r master/ wrk5
+cp -r master/ wrk6
+cp -r master/ wrk7
+cp -r master/ wrk8
+cp -r master/ wrk9
+cp -r master/ wrk10
+cp -r master/ wrk11
+cp -r master/ wrk12
+cp -r master/ wrk13
+cp -r master/ wrk14
+cp -r master/ wrk15
+cp -r master/ wrk16
+cp -r master/ wrk17
+cp -r master/ wrk18
+cp -r master/ wrk19
+cp -r master/ wrk20
+
+

@@ -8,7 +8,7 @@
     # arg2: "Year-Month-Day"
     # arg3: "Output file name" 
 
-    #Example: python ed_out_daily.py "2000-01-01" "2016-12-30" "output"
+    # Example: python ed_out_daily.py "2000-01-01" "2016-12-30" "output"
 
 ##############################################################################
 

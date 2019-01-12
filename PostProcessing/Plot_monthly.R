@@ -11,7 +11,7 @@ library(zoo)
 library(reshape2)
 #setwd("C:/ED")  When using mylaptop!
 
-pfx1 <- "N:/Data02/bcal/Presentations/Personal/hamid/ED_opt/tmp_analysis/"
+pfx1 <- "N:/Data02/bcal/Personal/hamid/ED_opt/tmp_analysis/"
 pfx2 <- file
 File <- paste0(pfx1,pfx2)
 

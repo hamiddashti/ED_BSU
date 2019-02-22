@@ -98,12 +98,14 @@ plot_monthly <- function(date1,date2,file,var){
   }
   
   data<-output[rowSums(output != 0) > 0,]
-  
+    
   if (is.vector(data)){
     data<-as.data.frame(data)
     data <- t(data)
     data<-as.data.frame(data)
-    rownames(data)<-"shrub"
+    pft_id <- which(rowSums(output != 0) > 0)
+    pft_name <- rownames(output)[pft_id]
+    rownames(data)<-pft_name
     data$row <- rownames(data)
     data2<-melt(data,id.vars = "row")
     a<-data2$variable

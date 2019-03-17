@@ -9,9 +9,9 @@ source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/Plot_monthly.R')
 # List of daily variables : GPP, NPP, FSC, SSC, STC
 # List of monthly variables: NPLANT, LAI, AGB
 
-df = read.csv("ws_daily.csv", header = TRUE)
-Plot_daily(df,"2014-10-01","2017-09-29","GPP")  # This is for daily plots
-plot_monthly('2014-10','2017-09',"ws_monthly.csv","NPLANT")  # this is for monthly plot
+df = read.csv("lss_daily.csv", header = TRUE)
+Plot_daily(df,"1988-01-01","1997-12-29","GPP")  # This is for daily plots
+plot_monthly('1988-01','1997-11',"mbs_monthly.csv","AGB")  # this is for monthly plot
 
 
 

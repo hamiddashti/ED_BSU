@@ -16,9 +16,9 @@ plot_monthly <- function(date1,date2,file,var){
   df <- read.csv(File, header = TRUE)
   I1 <- which(df$dates==date1)
   I2 <- which(df$dates==date2)
-  tmp <- I2-I1
+  #tmp <- I2-I1
   
-  if (tmp < 5){print("Provide a wider range of dates: you might get error")}
+  #if (tmp < 5){print("Provide a wider range of dates: you might get error")}
   
   df <- df[I1:I2,]
   

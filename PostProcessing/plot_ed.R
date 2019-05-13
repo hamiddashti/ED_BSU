@@ -9,10 +9,13 @@ source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/Plot_monthly.R')
 # List of daily variables : GPP, NPP, FSC, SSC, STC
 # List of monthly variables: NPLANT, LAI, AGB
 
-df1 = read.csv("opt_daily_init.csv", header = TRUE)
-Plot_daily(df1,"1988-10-01","2017-09-28","GPP")  # This is for daily plots
-plot_monthly('1988-10','2017-09',"opt_monthly_init.csv","AGB")  # this is for monthly plot
-df = read.csv("opt_daily_init.csv", header = TRUE)
+df_daily = read.csv("ws_karun.csv", header = TRUE)
+Plot_daily(df_daily,"2000-10-01","2017-09-27","GPP")  # This is for daily plots
+
+df_monthly = read.csv("ws_30_monthly.csv",header = TRUE)
+
+plot_monthly('1988-10','2017-08',"ws_30_monthly.csv","AGB")  # this is for monthly plot
+plot(df_monthly$GPP,ty="l")
 
 
 df2= read.csv("Ploting.xlsx", header = TRUE)
@@ -39,8 +42,5 @@ ggsave("NPLANT_200y.png",width = 6.5, height = 4.5)
 
 plot_monthly('1817-01','2016-11',"200_ws_monthly.csv","AGB")  # this is for monthly plot
 ggsave("AGB_200y.png",width = 6.5, height = 4.5)
-
-
-
 
 

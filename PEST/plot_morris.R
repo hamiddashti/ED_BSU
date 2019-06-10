@@ -13,21 +13,23 @@ library(ggrepel)
 ###########################################################
 # Plot total Morris
 ###########################################################
-pfx1 = "Morris_ls"
+pfx1 = "Morris_mbs"
 pfx2 = ".csv"
 filename= paste(pfx1,pfx2,sep="")
-
+title = "MBS"
 data <- read.csv(filename,header = T)
+
 ggplot(data,aes(x=sen_mean_abs,y=sen_std_dev))+ geom_point(size=3, shape=4)+
   geom_text_repel(aes(label=data$parameter_name))+
-  theme_bw()+
+  theme_bw()+ ggtitle(title)+
   theme(panel.grid.major.x = element_blank(),panel.grid.major.y = element_blank(),
         panel.grid.minor = element_blank())+
-  labs(x=expression(mu),y=expression(sigma)) + 
+  labs(x=expression(paste(mu, "*")),y=expression(sigma)) + 
   theme(axis.text=element_text(size=12),
-  axis.title=element_text(size=14,face="bold"),
+  axis.title=element_text(size=20,face="bold"),
   axis.text.x = element_text(size=12,colour = "black"),
-  axis.text.y = element_text(size=12,colour = "black"))
+  axis.text.y = element_text(size=12,colour = "black"),
+  plot.title = element_text( size=14,hjust = 0.5,face="bold"))
   
 outname = paste(pfx1,".png",sep="")
 ggsave(outname, width = 5, height = 5, units = "in",dpi=300)
@@ -35,7 +37,7 @@ ggsave(outname, width = 5, height = 5, units = "in",dpi=300)
 #################################################################
 # Plotting the temporal Mean for all outputs
 #################################################################
-pfx1 = "Morris_all_mbs"
+pfx1 = "Morris_all_ls"
 pfx2 = ".csv"
 filename= paste(pfx1,pfx2,sep="")
 title = "MBS"

@@ -11,126 +11,122 @@ setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries")
 
 #------------ Load the datasets ----------------------------
 
-ws5_opt <- read.csv("ws5_opt.csv", header = TRUE, as.is = TRUE)
-ws5_reg <- read.csv("ws5_reg.csv", header = TRUE, as.is = TRUE)
-ws_obs_tmp <- read.csv("ws_obs.csv", header = TRUE, as.is = TRUE)
-ws_reg_validation <- read.csv("ws5_reg_validation.csv",header = TRUE, as.is = TRUE)
-
-
-#------------ show the first and end date of each dataset-----
-
-print(paste0("The first date for ED simulation is:", ws5_opt$dates[1]))
-print(paste0("The end date for ED simulation is:", ws5_opt$dates[length(ws5_opt$dates)]))
-
-print(paste0("The first date for observation:", ws_obs_tmp$dates[1]))
-print(paste0("The End date for observation:", ws_obs_tmp$dates[length(ws_obs_tmp$dates)]))
+ws_opt <- read.csv("ws_opt.csv", header = TRUE, as.is = TRUE)
+ws_reg <- read.csv("ws_reg.csv", header = TRUE, as.is = TRUE)
+ws_obs <- read.csv("ws_obs.csv", header = TRUE, as.is = TRUE)
+dates <- seq(as.Date("2014/10/1"), as.Date("2017/9/30"), "days") # calibration period
+ws_obs$dates <- dates
 
 #------------ Prepare data for RRMSE and one-to-one plots-----
 
-dates <- seq(as.Date("2014/10/1"), as.Date("2016/9/30"), "days") # calibration period
-ws5_opt_gpp <- ws5_opt$GPP[which(ws5_opt$dates==dates[1]):which(ws5_opt$dates==dates[length(dates)])]
-ws5_reg_gpp <- ws5_reg$GPP[which(ws5_reg$dates==dates[1]):which(ws5_reg$dates==dates[length(dates)])]
-ws_obs_gpp <- ws_obs_tmp$GPP[which(ws_obs_tmp$dates=="10/1/2014"):which(ws_obs_tmp$dates=="9/30/2016")]
+cal_dates <- seq(as.Date("2014/10/1"), as.Date("2016/9/30"), "days") # calibration period
+val_dates <- seq(as.Date("2016/10/1"), as.Date("2017/9/30"), "days") # validation period
+opt.cal.daily <- ws_opt$GPP[which(ws_opt$dates==cal_dates[1]):which(ws_opt$dates==cal_dates[length(cal_dates)])]
+opt.val.daily <- ws_opt$GPP[which(ws_opt$dates==val_dates[1]):which(ws_opt$dates==val_dates[length(val_dates)])]
+reg.cal.daily <- ws_reg$GPP[which(ws_reg$dates==cal_dates[1]):which(ws_reg$dates==cal_dates[length(cal_dates)])]
+reg.val.daily <- ws_reg$GPP[which(ws_reg$dates==val_dates[1]):which(ws_reg$dates==val_dates[length(val_dates)])]
+obs.cal.daily <- ws_obs$GPP[which(ws_obs$dates==cal_dates[1]):which(ws_obs$dates==cal_dates[length(cal_dates)])]
+obs.val.daily <- ws_obs$GPP[which(ws_obs$dates==val_dates[1]):which(ws_obs$dates==val_dates[length(val_dates)])]
 
-ws5_opt_df <- data.frame(dates,ws5_opt_gpp)
-colnames(ws5_opt_df) <- c("Date","GPP")
-
-ws5_reg_df <- data.frame(dates,ws5_reg_gpp)
-colnames(ws5_reg_df) <- c("Date","GPP")
-
-ws_obs_df <- data.frame(dates,ws_obs_gpp)
-colnames(ws_obs_df) <- c("Date","GPP")
-
-ws5_opt_monthly <- aggregate(ws5_opt_df$GPP, list(format(ws5_opt_df$Date, "%Y-%m")), max)
-colnames(ws5_opt_monthly) <- c('Date', 'GPP')
-
-ws5_reg_monthly <- aggregate(ws5_reg_df$GPP, list(format(ws5_reg_df$Date, "%Y-%m")), max)
-colnames(ws5_reg_monthly) <- c('Date', 'GPP')
-
-ws_obs_monthly <- aggregate(ws_obs_df$GPP, list(format(ws_obs_df$Date, "%Y-%m")), max)
-colnames(ws_obs_monthly) <- c('Date', 'GPP')
-
-tmp_opt <- zoo(ws5_opt_df$GPP,ws5_opt_df$Date)
-tmp_opt_week <- apply.weekly(tmp_opt, max)
-ws5_opt_weekly <- as.data.frame(tmp_opt_week)
-ws5_opt_weekly$Date <- as.Date(rownames(ws5_opt_weekly))
-colnames(ws5_opt_weekly) <- c('GPP','Date')
-
-tmp_reg <- zoo(ws5_reg_df$GPP,ws5_reg_df$Date)
-tmp_reg_week <- apply.weekly(tmp_reg, max)
-ws5_reg_weekly <- as.data.frame(tmp_reg_week)
-ws5_reg_weekly$Date <- as.Date(rownames(ws5_reg_weekly))
-colnames(ws5_reg_weekly) <- c('GPP','Date')
-
-tmp_obs <- zoo(ws_obs_df$GPP,ws_obs_df$Date)
-tmp_obs_week <- apply.weekly(tmp_obs, max)
-ws_obs_weekly <- as.data.frame(tmp_obs_week)
-ws_obs_weekly$Date <- as.Date(rownames(ws_obs_weekly))
-colnames(ws_obs_weekly) <- c('GPP','Date')
+opt.cal.monthly <- aggregate(opt.cal.daily, list(format(cal_dates, "%Y-%m")), mean)
+colnames(opt.cal.monthly) <- c('Date', 'GPP')
+opt.val.monthly <- aggregate(opt.val.daily, list(format(val_dates, "%Y-%m")), mean)
+colnames(opt.val.monthly) <- c('Date', 'GPP')
+reg.cal.monthly <- aggregate(reg.cal.daily, list(format(cal_dates, "%Y-%m")), mean)
+colnames(reg.cal.monthly) <- c('Date', 'GPP')
+reg.val.monthly <- aggregate(reg.val.daily, list(format(val_dates, "%Y-%m")), mean)
+colnames(reg.val.monthly) <- c('Date', 'GPP')
+obs.cal.monthly <- aggregate(obs.cal.daily, list(format(cal_dates, "%Y-%m")), mean)
+colnames(obs.cal.monthly) <- c('Date', 'GPP')
+obs.val.monthly <- aggregate(obs.val.daily, list(format(val_dates, "%Y-%m")), mean)
+colnames(obs.val.monthly) <- c('Date', 'GPP')
 
 
-df_all_daily <- data.frame(dates,ws_obs_gpp,ws5_opt_gpp,ws5_reg_gpp)
-colnames(df_all_daily) <- c('Date', 'Obs', "Opt","Reg")
+#ws5_reg_gpp <- ws5_reg$GPP[which(ws5_reg$dates==dates[1]):which(ws5_reg$dates==dates[length(dates)])]
+#ws_obs_gpp <- ws_obs_tmp$GPP[which(ws_obs_tmp$dates=="10/1/2014"):which(ws_obs_tmp$dates=="9/30/2016")]
 
-df_all_monthly <- data.frame(ws5_opt_monthly$Date,ws_obs_monthly$GPP,ws5_opt_monthly$GPP,ws5_reg_monthly$GPP)
-colnames(df_all_monthly) <- c('Date', 'Obs', "Opt","Reg")
+#ws5_opt_df <- data.frame(dates,ws5_opt_gpp)
+#colnames(ws5_opt_df) <- c("Date","GPP")
 
-df_all_weekly <- data.frame(ws5_opt_weekly$Date,ws_obs_weekly$GPP,ws5_opt_weekly$GPP,ws5_reg_weekly$GPP)
-colnames(df_all_weekly) <- c('Date', 'Obs', "Opt","Reg")
+#ws5_reg_df <- data.frame(dates,ws5_reg_gpp)
+#colnames(ws5_reg_df) <- c("Date","GPP")
+
+#ws_obs_df <- data.frame(dates,ws_obs_gpp)
+#colnames(ws_obs_df) <- c("Date","GPP")
+
+#ws5_opt_monthly <- aggregate(ws5_opt_df$GPP, list(format(ws5_opt_df$Date, "%Y-%m")), max)
+#colnames(ws5_opt_monthly) <- c('Date', 'GPP')
+
+#ws5_reg_monthly <- aggregate(ws5_reg_df$GPP, list(format(ws5_reg_df$Date, "%Y-%m")), max)
+#colnames(ws5_reg_monthly) <- c('Date', 'GPP')
+
+#ws_obs_monthly <- aggregate(ws_obs_df$GPP, list(format(ws_obs_df$Date, "%Y-%m")), max)
+#colnames(ws_obs_monthly) <- c('Date', 'GPP')
+
+# tmp_opt <- zoo(ws5_opt_df$GPP,ws5_opt_df$Date)  # weekly interpolation
+# tmp_opt_week <- apply.weekly(tmp_opt, max)
+# ws5_opt_weekly <- as.data.frame(tmp_opt_week)
+# ws5_opt_weekly$Date <- as.Date(rownames(ws5_opt_weekly))
+# colnames(ws5_opt_weekly) <- c('GPP','Date')
+# 
+# tmp_reg <- zoo(ws5_reg_df$GPP,ws5_reg_df$Date)
+# tmp_reg_week <- apply.weekly(tmp_reg, max)
+# ws5_reg_weekly <- as.data.frame(tmp_reg_week)
+# ws5_reg_weekly$Date <- as.Date(rownames(ws5_reg_weekly))
+# colnames(ws5_reg_weekly) <- c('GPP','Date')
+# 
+# tmp_obs <- zoo(ws_obs_df$GPP,ws_obs_df$Date)
+# tmp_obs_week <- apply.weekly(tmp_obs, max)
+# ws_obs_weekly <- as.data.frame(tmp_obs_week)
+# ws_obs_weekly$Date <- as.Date(rownames(ws_obs_weekly))
+# colnames(ws_obs_weekly) <- c('GPP','Date')
+# 
+
+# df_all_daily <- data.frame(dates,ws_obs_gpp,ws5_opt_gpp,ws5_reg_gpp)
+# colnames(df_all_daily) <- c('Date', 'Obs', "Opt","Reg")
+# 
+# df_all_monthly <- data.frame(ws5_opt_monthly$Date,ws_obs_monthly$GPP,ws5_opt_monthly$GPP,ws5_reg_monthly$GPP)
+# colnames(df_all_monthly) <- c('Date', 'Obs', "Opt","Reg")
+# 
+# df_all_weekly <- data.frame(ws5_opt_weekly$Date,ws_obs_weekly$GPP,ws5_opt_weekly$GPP,ws5_reg_weekly$GPP)
+# colnames(df_all_weekly) <- c('Date', 'Obs', "Opt","Reg")
 
 
 
 #------------Calculate the RMSEs -------------------------------------------
-MAE_obs_opt_daily <- mae(ws_obs_gpp,ws5_opt_gpp)
-MAE_obs_reg_daily <- mae(ws_obs_gpp,ws5_reg_gpp)
-R2_obs_opt_daily <- caret::R2(ws_obs_gpp,ws5_opt_gpp)
-R2_obs_reg_daily <- caret::R2(ws_obs_gpp,ws5_reg_gpp)
+MAE.cal.obs.opt.daily <- mae(obs.cal.daily,opt.cal.daily)
+R2.cal.obs.opt.daily <- caret::R2(obs.cal.daily,opt.cal.daily)
+MAE.cal.obs.reg.daily <- mae(obs.cal.daily,reg.cal.daily)
+R2.cal.obs.reg.daily <- caret::R2(obs.cal.daily,reg.cal.daily)
+MAE.val.obs.opt.daily <- mae(obs.val.daily,opt.val.daily)
+R2.val.obs.opt.daily <- caret::R2(obs.val.daily,opt.val.daily)
+MAE.val.obs.reg.daily <- mae(obs.val.daily,reg.val.daily)
+R2.val.obs.reg.daily <- caret::R2(obs.val.daily,reg.val.daily)
 
-MAE_obs_opt_monthly <- mae(ws_obs_monthly$GPP,ws5_opt_monthly$GPP)
-MAE_obs_reg_monthly <- mae(ws_obs_monthly$GPP,ws5_reg_monthly$GPP)
-R2_obs_opt_monthly <- caret::R2(ws_obs_monthly$GPP,ws5_opt_monthly$GPP)
-R2_obs_reg_monthly <- caret::R2(ws_obs_monthly$GPP,ws5_reg_monthly$GPP)
+MAE.cal.obs.opt.monthly <- mae(obs.cal.monthly$GPP,opt.cal.monthly$GPP)
+R2.cal.obs.opt.monthly <- caret::R2(obs.cal.monthly$GPP,opt.cal.monthly$GPP)
+MAE.cal.obs.reg.monthly <- mae(obs.cal.monthly$GPP,reg.cal.monthly$GPP)
+R2.cal.obs.reg.monthly <- caret::R2(obs.cal.monthly$GPP,reg.cal.monthly$GPP)
+MAE.val.obs.opt.monthly <- mae(obs.val.monthly$GPP,opt.val.monthly$GPP)
+R2.val.obs.opt.monthly <- caret::R2(obs.val.monthly$GPP,opt.val.monthly$GPP)
+MAE.val.obs.reg.monthly <- mae(obs.val.monthly$GPP,reg.val.monthly$GPP)
+R2.val.obs.reg.monthly <- caret::R2(obs.val.monthly$GPP,reg.val.monthly$GPP)
 
-MAE_obs_opt_weekly <- mae(ws_obs_weekly$GPP,ws5_opt_weekly$GPP)
-MAE_obs_reg_weekly <- mae(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
-R2_obs_opt_weekly <- caret::R2(ws_obs_weekly$GPP,ws5_opt_weekly$GPP)
-R2_obs_reg_weekly <- caret::R2(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
+# MAE_obs_opt_monthly <- mae(ws_obs_monthly$GPP,ws5_opt_monthly$GPP)
+# MAE_obs_reg_monthly <- mae(ws_obs_monthly$GPP,ws5_reg_monthly$GPP)
+# R2_obs_opt_monthly <- caret::R2(ws_obs_monthly$GPP,ws5_opt_monthly$GPP)
+# R2_obs_reg_monthly <- caret::R2(ws_obs_monthly$GPP,ws5_reg_monthly$GPP)
+
+# MAE_obs_opt_weekly <- mae(ws_obs_weekly$GPP,ws5_opt_weekly$GPP)
+# MAE_obs_reg_weekly <- mae(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
+# R2_obs_opt_weekly <- caret::R2(ws_obs_weekly$GPP,ws5_opt_weekly$GPP)
+# R2_obs_reg_weekly <- caret::R2(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
 
 
-# ------------ Validation ------------------------------------------------
-
-
-dates_val <- seq(as.Date("2016/10/1"), as.Date("2017/9/29"), "days") # calibration period
-
-
-#ws_opt_val_daily <- ws_reg_validation$GPP[which(ws_reg_validation$dates=="2016-10-01"):
-#                                            which(ws_reg_validation$dates=="2017-09-29")]
-#ws_reg_df_val_daily <- data.frame(dates_val,ws_reg_val_daily)
-#colnames(ws_reg_df_val_daily) <- c("Date","GPP")
-
-ws_reg_val_daily <- ws_reg_validation$GPP[which(ws_reg_validation$dates=="2016-10-01"):
-                                      which(ws_reg_validation$dates=="2017-09-29")]
-ws_reg_df_val_daily <- data.frame(dates_val,ws_reg_val_daily)
-colnames(ws_reg_df_val_daily) <- c("Date","GPP")
-
-ws_obs_val_daily <- ws_obs_tmp$GPP[which(ws_obs_tmp$dates=="10/1/2016"):which(ws_obs_tmp$dates=="9/29/2017")]
-ws_obs_df_val_daily <- data.frame(dates_val,ws_obs_val_daily)
-colnames(ws_obs_df_val_daily) <- c("Date","GPP")
-mae_val_daily <- mae(ws_reg_df_val_daily$GPP ,ws_obs_df_val_daily$GPP)
-R2_val_daily <- caret::R2(ws_reg_df_val_daily$GPP ,ws_obs_df_val_daily$GPP)
- 
-
-ws_reg_val_monthly<- aggregate(ws_reg_df_val_daily$GPP, list(format(ws_reg_df_val_daily$Date, "%Y-%m")), max)
-colnames(ws_reg_val_monthly) <- c('Date', 'GPP')
-
-ws_obs_val_monthly<- aggregate(ws_obs_df_val_daily$GPP, list(format(ws_obs_df_val_daily$Date, "%Y-%m")), max)
-colnames(ws_obs_val_monthly) <- c('Date', 'GPP')
-mae_val_monthly <- mae(ws_reg_val_monthly$GPP,ws_obs_val_monthly$GPP)
-R2_val_monthly <- caret::R2(ws_reg_val_monthly$GPP,ws_obs_val_monthly$GPP)
-
-MAE_val_weekly <- mae(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
-R2_val_weekly <- caret::R2(ws_obs_weekly$GPP,ws5_reg_weekly$GPP)
 #-------------some simple ploting--------------------------------------------
+
+df_all_daily <- data.frame(dates,ws_obs$GPP,ws_opt$GPP,ws_reg$GPP)
+colnames(df_all_daily) <- c('Date', 'Obs', "Opt","Reg")
 
 datm <- melt(df_all_daily,id.vars = "Date")
 datm$variable <- factor(datm$variable,levels = c('Obs', "Opt","Reg"),

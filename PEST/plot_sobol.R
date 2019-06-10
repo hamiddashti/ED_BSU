@@ -13,15 +13,14 @@ library(ggrepel)
 ###########################################################
 # Plot total Morris
 ###########################################################
-pfx1 = "Sobol_mbs"
+pfx1 = "Sobol_ls"
 pfx2 = ".csv"
 filename= paste(pfx1,pfx2,sep="")
-title = "MBS"
+#title = "MBS"
 data <- read.csv(filename,header = T)
 ggplot(data,aes(x=s_i,y=st_i))+ geom_point(size=3, shape=4)+
   geom_text_repel(aes(label=data$ï..parameter_name))+
   theme_bw()+
-  ggtitle(title)+
   theme(panel.grid.major.x = element_blank(),panel.grid.major.y = element_blank(),
         panel.grid.minor = element_blank())+
   labs(x="First order SI",y="Total SI") + 

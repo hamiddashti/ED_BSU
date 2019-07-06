@@ -1,18 +1,19 @@
-
+rm(list = ls())
 library(Fgmutils)
 
 library(Metrics)
 library(birk)
+library(ggplot2)
 
 rm(list = ls())
 setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries")
 
-startdate <- "2001-01-01"
-enddate <- "2017-10-30"
+startdate <- "2002-01-01"
+enddate <- "2017-09-30"
 
-landsat <- read.csv("ws_landsat.csv", header = TRUE, as.is = TRUE)
+landsat <- read.csv("ws_landsat_gpp.csv", header = TRUE, as.is = TRUE)
 landsat_date <-as.Date(as.character(landsat$dates),"%m/%d/%Y")
-landsat_gpp <- (landsat$GPP)/1000
+landsat_gpp <- ((landsat$GPP)/10000)*(365/16)
 ss <- smooth.spline(landsat_gpp)
 landsat_gpp <- ss$y
 df_landsat <- data.frame(date = landsat_date, gpp = landsat_gpp)
@@ -20,15 +21,15 @@ df_landsat <- df_landsat[which(landsat_date>=as.Date(startdate) & landsat_date<=
 
 
 
-modis <- read.csv("ws_modis.csv",header = TRUE, as.is = TRUE)
+modis <- read.csv("ws_modis_gpp.csv",header = TRUE, as.is = TRUE)
 modis_date <-as.Date(as.character(modis$dates),"%m/%d/%Y")
-modis_gpp <- (modis$GPP)/1000
+modis_gpp <- ((modis$GPP)/10000)*(365/8)
 ss <- smooth.spline(modis_gpp)
 modis_gpp <- ss$y
 df_modis = data.frame(date = modis_date, gpp = modis_gpp)
 df_modis <- df_modis[which(modis_date>=as.Date(startdate) & modis_date<=as.Date(enddate)),]
 
-sim <- read.csv("ws_sim.csv", header = TRUE, as.is = TRUE)
+sim <- read.csv("ws_karun_best.csv", header = TRUE, as.is = TRUE)
 sim_date <-as.Date(sim$dates)
 sim_gpp <- sim$GPP
 ss <- smooth.spline(sim_gpp)

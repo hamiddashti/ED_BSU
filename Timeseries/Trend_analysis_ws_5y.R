@@ -93,7 +93,7 @@ colnames(obs.val.monthly) <- c('Date', 'GPP')
 
 
 
-#------------Calculate the RMSEs -------------------------------------------
+#------------Calculate the MAEs -------------------------------------------
 MAE.cal.obs.opt.daily <- mae(obs.cal.daily,opt.cal.daily)
 R2.cal.obs.opt.daily <- caret::R2(obs.cal.daily,opt.cal.daily)
 MAE.cal.obs.reg.daily <- mae(obs.cal.daily,reg.cal.daily)

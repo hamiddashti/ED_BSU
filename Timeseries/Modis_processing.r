@@ -1,6 +1,28 @@
 rm(list = ls())
 setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries")
 
+#--------------Modis quality control for GPP --------------
+# References: https://www.nceas.ucsb.edu/~pau/StephanieSite/Home_files/MODIS_LP_QA_Tutorial-1.pdf 
+# And https://www.r-bloggers.com/modis-qc-bits/
+
+# Fist step is to convert integer to bit
+intbit <- as.integer(intToBits(1075576832))[1:8]       # the number [1:8] is to select the  bit (MODIS GPP file specification)
+# Then since HDF files are written in endian format we have to reverese this order
+
+intbit_rev <- rev(intbit)
+
+# Then we flag the data based on the bit number (page 9  https://www.nceas.ucsb.edu/~pau/StephanieSite/Home_files/MODIS_LP_QA_Tutorial-1.pdf)
+# NOTE WE SHOULD READ THE BITS FROM RIGHT TO LEFT
+
+
+
+
+
+
+
+
+
+
 # --------Load csv files downloaded from GEE ---------------
 df1 <- read.csv("MODIS_Terra_SR1d_WS_2000_2004.csv", header = TRUE, as.is = TRUE)
 dates_df1 <- seq(as.Date("2000/02/24"), as.Date("2004/12/31"), "days")

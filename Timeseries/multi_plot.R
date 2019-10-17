@@ -6,12 +6,12 @@ library(birk)
 library(ggplot2)
 
 rm(list = ls())
-setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries")
+setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries/Modis")
 
-startdate <- "2002-01-01"
+startdate <- "2000-02-18"
 enddate <- "2017-09-30"
 
-landsat <- read.csv("ws_landsat_gpp.csv", header = TRUE, as.is = TRUE)
+modis <- read.csv(".csv", header = TRUE, as.is = TRUE)
 landsat_date <-as.Date(as.character(landsat$dates),"%m/%d/%Y")
 landsat_gpp <- ((landsat$GPP)/10000)*(365/16)
 ss <- smooth.spline(landsat_gpp)

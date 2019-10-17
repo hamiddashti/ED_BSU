@@ -23,8 +23,8 @@ plot_monthly <- function(date1,date2,file,var){
   df <- df[I1:I2,]
   
   output <- matrix(0L,ncol=dim(df)[1], nrow=18)
-  rownames(output) <- c('C4 grass','Early tropical','Mid tropical','late tropical ',
-                        'temperate C3 grass ','northern pine','southern pines','late conifers',
+  rownames(output) <- c('C4 Grass','Early tropical','Mid tropical','late tropical ',
+                        'Temperate C3 Grass','northern pine','southern pines','late conifers',
                         'early temperate deciduous','mid temperate deciduous',
                         'late temperate deciduous','agricultural PFTs','agricultural PFTs',
                         'agricultural PFTs','agricultural PFTs','Subtropical C3 grass ','Araucaria"','Shrub')
@@ -42,14 +42,16 @@ plot_monthly <- function(date1,date2,file,var){
     var_tmp <- as.character(a[i])
     var_tmp <- gsub("[()]", "", var_tmp)
     var_tmp <- gsub(",$", "", var_tmp)
-    VAR <- as.numeric(strsplit(var_tmp,split=", ",fixed=TRUE)[[1]])
+    var_tmp <- as.numeric(strsplit(var_tmp,split=", ",fixed=TRUE)[[1]])
     
-    #nplant_tmp <- as.character(df$NPLANT[i])
-    #nplant_tmp<-gsub("[()]", "", nplant_tmp)
-    #nplant_tmp <- gsub(",$", "", nplant_tmp)
-    #NPLANT=as.numeric(strsplit(nplant_tmp,split=", ",fixed=TRUE)[[1]])
+    nplant_tmp <- as.character(df$NPLANT[i])
+    nplant_tmp<-gsub("[()]", "", nplant_tmp)
+    nplant_tmp <- gsub(",$", "", nplant_tmp)
+    NPLANT=as.numeric(strsplit(nplant_tmp,split=", ",fixed=TRUE)[[1]])
     
-    groups <- split(VAR, PFT)
+    VAR = NPLANT*var_tmp
+    
+      groups <- split(VAR, PFT)
     pft_name <- names(groups) 
     
     for (j in 1:length(groups)){ 
@@ -131,7 +133,9 @@ plot_monthly <- function(date1,date2,file,var){
     ytitle = "Biomass [kg/m2]\n"
   } else if (var=="LAI"){
     ytitle = "LAI [m2/m2]\n"
-  } else {
+  } else if (var=="GPP"){
+    ytitle = "GPP [KGC/year]\n" 
+  }else {
     print("data or date ir wrong!! check the CSV file.")
   }
   
@@ -139,9 +143,12 @@ plot_monthly <- function(date1,date2,file,var){
     geom_bar(stat="identity") + xlab("\nTime") + ylab(ytitle)+
     theme_bw() +  guides(fill=guide_legend(title="PFTs"))+
     theme(axis.text.x = element_text(angle = 90, hjust = 1)
-          ,axis.text=element_text(size=12),
-          axis.title=element_text(size=12,face="bold"),
-          legend.text=element_text(size=10,face="bold")) +scale_x_yearmon(format="%b-%Y", n=5)
+          ,axis.text=element_text(size=16),
+          axis.title=element_text(size=18),
+          legend.text=element_text(size=16),
+          legend.title=element_text(size=18)) +
+    scale_x_yearmon(format="%Y", n=5)+
+    scale_fill_manual("legend", values = c("Shrub"="red","Temperate C3 Grass" = "green"))
   
 }
 

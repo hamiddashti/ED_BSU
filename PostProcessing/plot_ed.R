@@ -12,9 +12,9 @@ source('N:/Data02/bcal/Personal/hamid/ED_BSU/PostProcessing/Plot_monthly.R')
 df_daily = read.csv("ws_karun.csv", header = TRUE)
 Plot_daily(df_daily,"2000-10-01","2017-09-27","GPP")  # This is for daily plots
 
-df_monthly = read.csv("ws_30_monthly.csv",header = TRUE)
+df_monthly = read.csv("ws_monthly.csv",header = TRUE)
 
-plot_monthly('1988-10','2017-08',"ws_30_monthly.csv","AGB")  # this is for monthly plot
+plot_monthly('2000-01','2017-09',"monthly_ws.csv","GPP")  # this is for monthly plot
 plot(df_monthly$GPP,ty="l")
 
 

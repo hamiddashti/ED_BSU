@@ -24,7 +24,6 @@
 
 rm(list = ls())
 setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Timeseries/Modis")
-load("Trend_analysis.RData")
 library(zoo)
 library(signal)
 library(lubridate)
@@ -32,6 +31,7 @@ library(anytime)
 require(grid)
 library(ggplot2)
 library(Fgmutils)
+library(Rbeast)
 
 source('N:/Data02/bcal/Personal/hamid/ED_BSU/Timeseries/My_SOS.R')
 source('N:/Data02/bcal/Personal/hamid/ED_BSU/Timeseries/My_EOS.R')
@@ -40,16 +40,16 @@ source('N:/Data02/bcal/Personal/hamid/ED_BSU/Timeseries/multiplot.R')
 
 # ----------- Load the simulated and Observed ----------------------------------
 
-ws_opt <- read.csv("ws_trend.csv", header = TRUE, as.is = TRUE)
-ws_obs <- read.csv("WS_obs.csv", header = TRUE, as.is = TRUE)
-obs_dates <- seq(as.Date("2014/10/1"), as.Date("2017/9/30"), "days") # Observation period
+ls_opt <- read.csv("ls_trend.csv", header = TRUE, as.is = TRUE)
+ls_obs <- read.csv("ls_obs.csv", header = TRUE, as.is = TRUE)
+obs_dates <- seq(as.Date("2015/10/1"), as.Date("2017/9/30"), "days") # Observation period
 opt_dates <- seq(as.Date("2000/02/11"), as.Date("2017/9/30"), "days")
-ws_obs$dates <- obs_dates
-ws_opt$dates <- opt_dates
+ls_obs$dates <- obs_dates
+ls_opt$dates <- opt_dates
 #smooth_opt <- sgolayfilt(ws_opt$GPP,3,11)
 
-df_obs_gpp <- data.frame(ws_obs$dates,ws_obs$GPP)
-df_opt_gpp <- data.frame(ws_opt$dates,ws_opt$GPP)
+df_obs_gpp <- data.frame(ls_obs$dates,ls_obs$GPP)
+df_opt_gpp <- data.frame(ls_opt$dates,ls_opt$GPP)
 colnames(df_obs_gpp) <- c("Date","GPP") 
 colnames(df_opt_gpp) <- c("Date","GPP") 
 
@@ -57,7 +57,7 @@ colnames(df_opt_gpp) <- c("Date","GPP")
 # --------------- Plot Simulated vs Observed ---------------
 
 
-tmp_df_opt <- df_opt_gpp[df_opt_gpp$Date>"2014/10/1",]
+tmp_df_opt <- df_opt_gpp[df_opt_gpp$Date>"2015/10/1",]
 ylabel_p="GPP ";unit="[kgC/m2/yr]"
 graphics.off()
 #tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/ws_calibration.tiff", units="in", width=2.7, height=2.3, res=300)
@@ -139,7 +139,7 @@ plot(obs_mon,ty='l')
 
 
 # ------------Load csv files (SR and GPP) downloaded from GEE ---------------
-tmp1 <- read.csv("EC_WS_MOD09A1006_SR8d_t_2000_2018.csv", header = TRUE, as.is = TRUE)
+tmp1 <- read.csv("EC_ls_MOD09A1006_SR8d_t_2000_2018.csv", header = TRUE, as.is = TRUE)
 tmp2 <- as.matrix(tmp1[2:(length(tmp1)-1)])  # remove the first and last columns
 # This is 8days products so for this date range we have 821 observations. 
 # We also have 8 variables downloaded --> 8*821 = 6568
@@ -151,17 +151,19 @@ colnames(data) <- c("B1","B2","B3","B4","B5","B6","B7")  # RED; NIR; BLUE; GREEN
 tmp3 <- substr(names(tmp1[2:(length(tmp1)-1)]),2,11)
 tmp4 <- matrix(tmp3,nrow = 821, byrow = TRUE)
 modis_dates <- as.Date(tmp4[,1],"%Y.%m.%d" )
-ws_sr <- cbind(modis_dates,data)
-I_modis <- which(ws_sr$modis_dates<"2017-10-01")
-NDVI <- (ws_sr$B2[I_modis] - ws_sr$B1[I_modis]) /(ws_sr$B2[I_modis] + ws_sr$B1[I_modis])
-NIRv <- NDVI *ws_sr$B2[I_modis]
+ls_sr <- cbind(modis_dates,data)
+I_modis <- which(ls_sr$modis_dates<"2017-10-01")
+NDVI <- (ls_sr$B2[I_modis] - ls_sr$B1[I_modis]) /(ls_sr$B2[I_modis] + ls_sr$B1[I_modis])
+NIRv <- NDVI *ls_sr$B2[I_modis]
 NIRv <- na.approx(NIRv)
-df_modis_nirv <-  data.frame(modis_dates[I_modis],NIRv)
+I_nirv <- which(!is.na(NIRv))
+tmp_modis_date <- modis_dates[I_modis]
+df_modis_nirv <-  data.frame(modis_dates[I_nirv],NIRv[I_nirv])
 colnames(df_modis_nirv) <- c("Date","NIRv")
 
 plot(df_modis_nirv,ty='l')
 
-tmp1 <- read.csv("EC_WS_MYD17A2H006_GPP8d_t_2000_2018.csv", header = TRUE, as.is = TRUE)
+tmp1 <- read.csv("EC_lS_MYD17A2H006_GPP8d_t_2000_2018.csv", header = TRUE, as.is = TRUE)
 tmp2 <- as.matrix(tmp1[2:(length(tmp1)-1)])  # remove the first and last columns
 # This is 8days products so for this date range we have 821 observations. 
 # We also have 2 variables [QC and GPP] downloaded --> 2*821 = 6568
@@ -200,11 +202,11 @@ smooth_sim_gpp <- sgolayfilt(sim_mon_gpp$GPP,3,11)
 smooth_modis_gpp <- sgolayfilt(modis_mon_gpp$GPP,3,11)
 smooth_modis_nirv <- sgolayfilt(modis_mon_nirv$NIRv,3,11)
 
-df_sim_gpp <- data.frame(as.Date(sim_mon_gpp$Date),smooth_sim_gpp,line=1, point=NA)
-df_modis_gpp <- data.frame(as.Date(modis_mon_gpp$Date),smooth_modis_gpp,line=2,point=NA)
+df_sim_gpp <- data.frame(as.Date(sim_mon_gpp$Date),smooth_sim_gpp)
+df_modis_gpp <- data.frame(as.Date(modis_mon_gpp$Date),smooth_modis_gpp)
 df_modis_nirv <- data.frame(as.Date(modis_mon_nirv$Date),smooth_modis_nirv)
-colnames(df_sim_gpp) <- c("Date","GPP",'line','point')
-colnames(df_modis_gpp) <- c("Date","GPP",'line','point')
+colnames(df_sim_gpp) <- c("Date","GPP")
+colnames(df_modis_gpp) <- c("Date","GPP")
 colnames(df_modis_nirv) <- c("Date","NIRv")
 
 # df_modis_nirv <- data.frame(as.Date(ws_sr$modis_dates),smooth_nirv)
@@ -229,8 +231,7 @@ for (j in 1: dim(modis_sos$Daily)[2]) {
   
   modis_sos_gpp[j] <- modis_sos_daily[modis_sos$DOY[j],j]
 }
-modis_sos_point<- data.frame(as.Date(modis_sos$Date),modis_sos_gpp,line=NA,point=1)
-colnames(modis_sos_point) <- c("Date","GPP","line","point")
+modis_sos_point<- data.frame(as.Date(modis_sos$Date),modis_sos_gpp)
 
 
 modisnir_sos <- My_SOS(df_modis_nirv,"NIRv")
@@ -241,8 +242,7 @@ for (j in 1: dim(modisnir_sos$Daily)[2]) {
 
   modisnir_sos_nir[j] <- modisnir_sos_daily[modisnir_sos$DOY[j],j]
 }
-modisnir_sos_point<- data.frame(as.Date(modisnir_sos$Date),modisnir_sos_nir,line=NA,point=1)
-colnames(modisnir_sos_point) <- c("Date","GPP","line","point")
+modisnir_sos_point<- data.frame(as.Date(modisnir_sos$Date),modisnir_sos_nir)
 
 sim_sos <- My_SOS(df_sim_gpp,"GPP")
 sim_sos_daily <- sim_sos$Daily[2:366,] 
@@ -252,8 +252,7 @@ for (j in 1: dim(sim_sos$Daily)[2]) {
    
   sim_sos_gpp[j] <- sim_sos_daily[sim_sos$DOY[j],j]
 }
-sim_sos_point<- data.frame(as.Date(sim_sos$Date),sim_sos_gpp,line=NA,point=1)
-colnames(sim_sos_point) <- c("Date","GPP","line","point")
+sim_sos_point<- data.frame(as.Date(sim_sos$Date),sim_sos_gpp)
 
 
 
@@ -276,8 +275,8 @@ for (j in 1: dim(modis_eos$Daily)[2]) {
   
   modis_eos_gpp[j] <- modis_eos_daily[modis_eos$DOY1[j],j]
 }
-modis_eos_point<- data.frame(as.Date(modis_eos$Date1),modis_eos_gpp,line=NA,point=2)
-colnames(modis_eos_point) <- c("Date","GPP","line","point")
+modis_eos_point<- data.frame(as.Date(modis_eos$Date1),modis_eos_gpp)
+
 
 modisnir_eos <- My_EOS(df_modis_nirv,"NIRv")
 modisnir_eos_daily <- modisnir_eos$Daily[2:366,] 
@@ -287,8 +286,8 @@ for (j in 1: dim(modisnir_eos$Daily)[2]) {
   
   modisnir_eos_nir[j] <- modisnir_eos_daily[modisnir_eos$DOY1[j],j]
 }
-modisnir_eos_point<- data.frame(as.Date(modisnir_eos$Date1),modisnir_eos_nir,line=NA,point=2)
-colnames(modisnir_eos_point) <- c("Date","GPP","line","point")
+modisnir_eos_point<- data.frame(as.Date(modisnir_eos$Date1),modisnir_eos_nir)
+
 
 sim_eos <- My_EOS(df_sim_gpp,"GPP")
 sim_eos_daily <- sim_eos$Daily[2:366,] 
@@ -298,8 +297,8 @@ for (j in 1: dim(sim_eos$Daily)[2]) {
   
   sim_eos_gpp[j] <- sim_eos_daily[sim_eos$DOY1[j],j]
 }
-sim_eos_point<- data.frame(as.Date(sim_eos$Date1),sim_eos_gpp,line=NA,point=2)
-colnames(sim_eos_point) <- c("Date","GPP","line","point")
+sim_eos_point<- data.frame(as.Date(sim_eos$Date1),sim_eos_gpp)
+
 
 
 
@@ -312,94 +311,29 @@ cols = gg_color_hue(2)
 
 graphics.off()
 ball_size = 1.5
+#tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/Phenometrics.tiff", units="in", width=6.5, height=4, res=300)
+ggplot() + 
+  geom_line(data = df_sim_gpp, aes(x =as.Date(df_sim_gpp$Date), y = df_sim_gpp$GPP,color="Simulated GPP"),size=0.5) +
+  geom_line(data = df_modis_gpp, aes(x =as.Date(df_modis_gpp$Date), y = df_modis_gpp$GPP,color="Modis GPP"),size=0.5)+
+  geom_point(data=sim_sos_point, aes(x=as.Date(sim_sos_point$as.Date.sim_sos.Date.), 
+                                     y=sim_sos_point$sim_sos_gpp, color='Simulated SOS'), size=ball_size, alpha=1,shape=19) +
+  geom_point(data=modis_sos_point, aes(x=as.Date(modis_sos_point$as.Date.modis_sos.Date.), 
+                                       y=modis_sos_point$modis_sos_gpp, color='Modis SOS'), size=ball_size, alpha=1,shape = 19)+
+  geom_point(data=sim_eos_point, aes(x=as.Date(sim_eos_point$as.Date.sim_eos.Date1.),
+                                     y=sim_eos_point$sim_eos_gpp, color='Simulated EOS'), size=ball_size, alpha=1,shape=17)+
+  geom_point(data=modis_eos_point, aes(x=as.Date(modis_eos_point$as.Date.modis_eos.Date1.),
+                                       y=modis_eos_point$modis_eos_gpp, color='Modis EOS'), size=ball_size, alpha=1,shape=17)+
+  theme(legend.title = element_blank(),legend.text = element_text(size=12),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=12,face="bold")) + scale_colour_manual(values = c(cols[1] ,cols[1],cols[1],cols[2],cols[2],cols[2]),
+                                                          guide = guide_legend(override.aes = list(
+                                                          linetype = c("solid", "solid"), shape = c(17, NA, 19, 17,NA,19)
+                                                                )))+
+  labs(x="Time", y=paste(ylabel_p,unit)) +
+  theme_bw()+theme(legend.title = element_blank(),legend.position="top")
+#dev.off()
 
-# ---------testing plot
-
-df_sim_gpp["factors"] <- as.factor(rep("Simulated GPP", 212))
-sim_sos_point["factors"] <- as.factor(rep("Simulated SOS",18))
-sim_eos_point["factors"] <- as.factor(rep("Simulated EOS",18))
-df_sim_gpp["type"] <- as.factor(rep("Simulated", 212))
-sim_sos_point["type"] <- as.factor(rep("Simulated",18))
-sim_eos_point["type"] <- as.factor(rep("Simulated",18))
-
-
-df_modis_gpp["factors"] <- as.factor(rep("MODIS GPP",212))
-modis_sos_point["factors"] <- as.factor(rep("MODIS SOS",18))
-modis_eos_point["factors"] <- as.factor(rep("MODIS EOS",18))
-df_modis_gpp["type"] <- as.factor(rep("MODIS",212))
-modis_sos_point["type"] <- as.factor(rep("MODIS",18))
-modis_eos_point["type"] <- as.factor(rep("MODIS",18))
-
-
-
-
-dat <- rbind(df_sim_gpp,sim_sos_point,sim_eos_point,df_modis_gpp,modis_sos_point,modis_eos_point)
-
-
-dat$factors <- factor(dat$factors, levels=c("MODIS GPP","MODIS SOS","MODIS EOS","Simulated GPP", "Simulated SOS", "Simulated EOS"))
-dat$type <- factor(dat$type,levels=c("Simulated","MODIS"))
-  
-tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/Phenometrics.tiff", units="in", width=8, height=4, res=300)
-
-ggplot(dat, aes(x = Date, y = GPP,colour=factors, linetype=factor(line), shape=factor(point))) +
-      geom_line(size=0.5) +
-      geom_point(size=ball_size, alpha=1) +
-    theme_bw()+
-    theme(legend.title = element_blank(),legend.text = element_text(size=12,family="serif"),
-          axis.text=element_text(size=12),
-          axis.title=element_text(size=12))+
-    labs(x="Time", y=paste(ylabel_p,unit))+
-  scale_colour_manual(values = c(cols[1] ,cols[1],cols[1],cols[2],cols[2],cols[2]))+
-    
-    guides(shape = FALSE, linetype = FALSE,
-         colour = guide_legend(override.aes =  list(shape = c(NA, 16, 17,NA,16,17),
-                                                    linetype = c("solid","blank","blank", "solid","blank", "blank")
-         )))
-dev.off()
-  
-  
-  
-# one to one plot
-
-sos_tmp <- data.frame(sim_sos$DOY,modis_sos$DOY)
-colnames(sos_tmp) <- c("Simulation", "MODIS")
-
-
-graphics.off()
-#tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/SOS_onetone.tiff", units="in", width=3, height=2.5, res=300)
-ggplot(data = sos_tmp, aes(x=Simulation,y=MODIS)) +
-  geom_point() +
-  labs(x="Simulated SOS [DOY]", y=paste("MODIS SOS [DOY]")) +
-  xlim(0,67)+ylim(0,67) +
-  geom_abline(slope =1) + 
-  annotate("text",x=15,y=60,label="R2 = 0.11",size=3)+
-  theme_bw()+
-  theme( axis.text=element_text(size=8),
-        axis.title=element_text(size=8)) 
-  
-dev.off()
- 
-
-eos_tmp <- data.frame(sim_eos$DOY1,modis_eos$DOY1)
-colnames(eos_tmp) <- c("Simulation", "MODIS")
-
-
-graphics.off()
-tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/EOS_onetone.tiff", units="in", width=3, height=2.5, res=300)
-ggplot(data = eos_tmp, aes(x=Simulation,y=MODIS)) +
-  geom_point() +
-  labs(x="Simulated EOS [DOY]", y=paste("MODIS EOS [DOY]")) +
-  xlim(175,265)+ylim(175,265) +
-  geom_abline(slope =1,intercept = 0) + 
-  annotate("text",x=190,y=256,label="R2 = 0.09",size=3)+
-  theme_bw()+
-  theme( axis.text=element_text(size=8),
-         axis.title=element_text(size=8)) 
-
-dev.off()
-r2_EOS = cor(sim_eos$DOY1,modis_eos$DOY1)^2
-
-???#--------------- Calculate the MAD (mean absolute difference) between differen SOS and EOS ------------------------------
+#--------------- Calculate the MAD (mean absolute difference) between differen SOS and EOS ------------------------------
 
 
 n <- length(sim_sos$DOY)
@@ -482,7 +416,7 @@ modis.nirv.trend <- beast(df_modis_nirv$NIRv,opt)
 sim.trend <- beast(df_sim_gpp$GPP,opt)
 
 par(mfrow=c(2,1)) 
-plot(modis.nirv.trend)
+plot(modis.gpp.trend)
 plot(sim.trend)
 
 modis.tcp <- modis.gpp.trend$tcp
@@ -517,29 +451,28 @@ sim.trend.df <- data.frame(cbind(df_sim_gpp$Date,sim.trend$s,sim.trend$t
 
     
     
-
-  graphics.off()
-  tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/ws_trend.tiff", units="in", width=10, height=7.5, res=300)
+graphics.off()
+#tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/ws_trend.tiff", units="in", width=10, height=7.5, res=300)
      
     df1 <- data.frame(cbind(df_modis_gpp$Date, rep(c("Season component"),212),modis.trend.df$s)) 
     df2 <- data.frame(cbind(rep(c("Changepoint probability"),212),modis.trend.df$sProb))
     df<-cbind(df1, df2)
     colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
     
-    p1<- ggplot() + 
+    p1 <- ggplot() + 
       geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$s,
                                            colour=Group1,linetype=Group1),size=0.5)+ 
-      #geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$sProb,
-       #                                    colour=Group2,linetype=Group2),size=0.8)+
+      geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$sProb,
+                                           colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(modis.trend.df$Date), ymin = modis.trend.df$LsCI, ymax = modis.trend.df$UsCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=14),legend.position = "none",legend.text=element_text(size=12))+
-      xlab("Time") + ylab("Seasonal") + ylim(c(-0.75,1.25))
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=12))+
+      xlab("Time") + ylab("Seasonal") 
     
       
       
@@ -548,20 +481,20 @@ sim.trend.df <- data.frame(cbind(df_sim_gpp$Date,sim.trend$s,sim.trend$t
     df<-cbind(df1, df2)
     colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
     
-     p2 <- ggplot() + 
+    p2 <- ggplot() + 
       geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$t,
                                colour=Group1,linetype=Group1),size=0.5)+ 
-      #geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$tProb,
-                              # colour=Group2,linetype=Group2),size=0.8)+
+      geom_line(data =df , aes(x =as.Date(modis.trend.df$Date), y = modis.trend.df$tProb,
+                               colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(modis.trend.df$Date), ymin = modis.trend.df$LtCI, ymax = modis.trend.df$UtCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=14),legend.position = "none",legend.text=element_text(size=12))+
-      xlab("Time") + ylab("Trend") +ylim(c(0,1.25)) 
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=12))+
+      xlab("Time") + ylab("Trend") 
     
     
     df1 <- data.frame(cbind(df_sim_gpp$Date, rep(c("Season component"),212),sim.trend.df$s)) 
@@ -570,19 +503,19 @@ sim.trend.df <- data.frame(cbind(df_sim_gpp$Date,sim.trend$s,sim.trend$t
     colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
     
     p3 <- ggplot() + 
-     geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$s,
+      geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$s,
                                colour=Group1,linetype=Group1),size=0.5)+ 
-      #geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$sProb,
-       #                        colour=Group2,linetype=Group2),size=0.8)+
+      geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$sProb,
+                               colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(sim.trend.df$Date), ymin = sim.trend.df$LsCI, ymax = sim.trend.df$UsCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=14),legend.position = "none",legend.text=element_text(size=12))+
-      xlab("Time") + ylab("Seasonal")+ ylim(c(-0.75,1.25)) 
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=12))+
+      xlab("Time") + ylab("Seasonal") 
     
     
     df1 <- data.frame(cbind(df_sim_gpp$Date, rep(c("Trend component"),212),sim.trend.df$t)) 
@@ -593,23 +526,23 @@ sim.trend.df <- data.frame(cbind(df_sim_gpp$Date,sim.trend$s,sim.trend$t
     p4 <- ggplot() + 
       geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$t,
                                colour=Group1,linetype=Group1),size=0.5)+ 
-      #geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$tProb,
-       #                        colour=Group2,linetype=Group2),size=0.8)+
+      geom_line(data =df , aes(x =as.Date(sim.trend.df$Date), y = sim.trend.df$tProb,
+                               colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(sim.trend.df$Date), ymin = sim.trend.df$LtCI, ymax = sim.trend.df$UtCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=14),legend.position = "none",legend.text=element_text(size=12))+
-      xlab("Time") + ylab("Trend") +ylim(c(0,1.25)) 
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=12))+
+      xlab("Time") + ylab("Trend") 
     
     
-    #df1 <- data.frame(cbind(df_modis_nirv$Date, rep(c("Season component"),212),modisnirv.trend.df$s)) 
-    #df2 <- data.frame(cbind(rep(c("Changepoint probability"),212),modisnirv.trend.df$sProb))
-    #df<-cbind(df1, df2)
-    #colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
+    df1 <- data.frame(cbind(df_modis_nirv$Date, rep(c("Season component"),212),modisnirv.trend.df$s)) 
+    df2 <- data.frame(cbind(rep(c("Changepoint probability"),212),modisnirv.trend.df$sProb))
+    df<-cbind(df1, df2)
+    colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
     
     # p5 <- ggplot() + 
     #   geom_line(data =df , aes(x =as.Date(modisnirv.trend.df$Date), y = modisnirv.trend.df$s,
@@ -651,7 +584,7 @@ sim.trend.df <- data.frame(cbind(df_sim_gpp$Date,sim.trend$s,sim.trend$t
     # 
     
     multiplot(p1,p3,p2,p4,cols = 2)
-dev.off()
+#dev.off()
 
 
 ##################################################################################
@@ -661,7 +594,7 @@ dev.off()
 ##################################################################################
     
 #-----------------------loading WS pricept--------------------------
-    setwd("N:/Data02/bcal/Personal/hamid/ED_opt/wrf_data/wrf_d02_hourly_30years_WS")
+    setwd("N:/Data02/bcal/Personal/hamid/ED_opt/wrf_data/wrf_d02_hourly_30years_LS")
     start <- as.Date("2000-02-01")
     end <- as.Date("2017-09-30")
     
@@ -674,14 +607,14 @@ dev.off()
     dates2 <- seq.Date(start, end, by = "month")
     
     n <- length(dates)
-    var_ws <- rep(0, n)
+    var_ls <- rep(0, n)
     
     for (i in 1:n ){
       print(i)
-      fName <- paste0("WS_",dates[i],".h5")
+      fName <- paste0("LS_",dates[i],".h5")
       var_tmp1 <-drop(h5read(fName,"/prate"))
       #var[i] <- mean(var_tmp1)*length(var_tmp1)*60*60   
-      var_ws[i] <- sum(var_tmp1)*(3600)
+      var_ls[i] <- sum(var_tmp1)*(3600)
     }
     
     
@@ -711,17 +644,19 @@ tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/precept_tr
     df<-cbind(df1, df2)
     colnames(df) <- c("Date", "Group1", "Value1","Group2","Value2")
     
-    p7<-ggplot() + 
+    p7 <-ggplot() + 
       geom_line(data =df , aes(x =as.Date(precep.trend.df$Date), y = precep.trend.df$s,
-                               colour=Group1,linetype=Group1),size=0.5) +
+                               colour=Group1,linetype=Group1),size=0.5)+ 
+      geom_line(data =df , aes(x =as.Date(precep.trend.df$Date), y = precep.trend.df$sProb,
+                               colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(precep.trend.df$Date), ymin = precep.trend.df$LsCI, ymax = precep.trend.df$UsCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=12),legend.position = "none",legend.text=element_text(size=8))+
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=8))+
       xlab("Time") + ylab("Seasonal") 
     
     
@@ -733,14 +668,16 @@ tiff("N:/Data02/bcal/Personal/hamid/ED_opt/working/Manuscript/Figures/precept_tr
     p8 <- ggplot() + 
       geom_line(data =df , aes(x =as.Date(precep.trend.df$Date), y = precep.trend.df$t,
                                colour=Group1,linetype=Group1),size=0.5)+ 
+      geom_line(data =df , aes(x =as.Date(precep.trend.df$Date), y = precep.trend.df$tProb,
+                               colour=Group2,linetype=Group2),size=0.8)+
       geom_ribbon(aes(x=as.Date(precep.trend.df$Date), ymin = precep.trend.df$LtCI, ymax = precep.trend.df$UtCI),
                   alpha = 0.2) + 
-      scale_linetype_manual(values=c("solid"))+ 
+      scale_linetype_manual(values=c("solid", "dashed"))+ 
       scale_fill_manual("",values="grey12") +
       theme_bw() + 
       theme(legend.title = element_blank(),
-            axis.text=element_text(size=12),
-            axis.title=element_text(size=12),legend.position = "none",legend.text=element_text(size=8))+
+            axis.text=element_text(size=8),
+            axis.title=element_text(size=8,face="bold"),legend.position = "top",legend.text=element_text(size=8))+
       xlab("Time") + ylab("Trend") 
     
     multiplot(p7,p8,cols = 2)

@@ -1,7 +1,7 @@
 # This script is for plotting Morris and Sobol sensitivity analysis
 
 rm(list = ls())
-setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/results")
+setwd("N:/Data02/bcal/Personal/hamid/ED_opt/working/Sensitivity_analysis")
 library(ggplot2)
 library(zoo)
 library(reshape2)
@@ -13,10 +13,10 @@ library(ggrepel)
 ###########################################################
 # Plot total Morris
 ###########################################################
-pfx1 = "Morris_mbs"
+pfx1 = "Morris_ws_final"
 pfx2 = ".csv"
 filename= paste(pfx1,pfx2,sep="")
-title = "MBS"
+title = "WBS"
 data <- read.csv(filename,header = T)
 
 ggplot(data,aes(x=sen_mean_abs,y=sen_std_dev))+ geom_point(size=3, shape=4)+
